@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppContext } from '../ctx/AppContext';
+import { useAppTheme } from '../ctx/AppContext';
 import { DESKTOP_BREAKPOINT } from '../config/constants';
 import Header from '../components/Header';
 import DayView from './DayView';
@@ -15,7 +15,7 @@ import WeekView from './WeekView';
 export default function ScheduleScreen() {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const { isLoaded } = useContext(AppContext);
+  const { isLoaded } = useAppTheme();
   const isDesktop = width >= DESKTOP_BREAKPOINT;
 
   // Le temps de relire les préférences (personnes affichées, thème), on ne

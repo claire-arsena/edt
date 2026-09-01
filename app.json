@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#f2f2f7"
+      "backgroundColor": "#0b0b0d"
     },
     "ios": {
       "supportsTablet": true,
@@ -19,7 +19,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#f2f2f7"
+        "backgroundColor": "#0b0b0d"
       },
       "package": "com.claire.edt"
     },
@@ -30,8 +30,8 @@
       "shortName": "EDT",
       "description": "Les emplois du temps de Claire, Alban et Clara",
       "lang": "fr",
-      "backgroundColor": "#f2f2f7",
-      "themeColor": "#d81b60",
+      "backgroundColor": "#0b0b0d",
+      "themeColor": "#121215",
       "display": "standalone",
       "scope": "/",
       "startUrl": "/"

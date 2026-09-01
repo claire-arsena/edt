@@ -30,14 +30,26 @@ l'app affiche directement la semaine, sans écran d'accueil intermédiaire.
   dans le coin du bloc indique, elle, à qui appartient le créneau.
 - **Cours simultanés** : quand deux emplois du temps se chevauchent, les blocs se
   partagent la largeur au lieu de se recouvrir.
-- **Journées alignées** : si deux personnes affichées commencent *et* finissent
-  leur journée à moins d'une heure d'écart, un indicateur le signale (bandeau en
-  vue jour, pastilles dans l'en-tête de colonne en vue semaine) — pratique pour
-  repérer un trajet commun.
-- **Profil et thème** : le choix « Je suis Claire / Alban / Clara » est purement
-  indicatif et le thème d'accent (rose, bleu, vert) se change en un clic. Pas de
-  code PIN : l'app se contente d'afficher des emplois du temps déjà publiés par
-  l'université, un verrou n'y protégerait rien.
+- **Enseignants** : les noms de profs sont extraits du champ `DESCRIPTION` du
+  flux ADE (formats « DUPONT JEAN » et « M. Dupont » reconnus, codes de cours et
+  libellés de groupe écartés) et affichés dans le bloc dès que sa hauteur le
+  permet. Si aucun nom n'est reconnu, la première ligne utile de la description
+  est affichée à la place.
+- **Covoiturage Claire / Alban** : quand leurs deux journées commencent *et*
+  finissent à moins d'une heure d'écart, un bandeau annonce « Covoiturage
+  possible le <jour> <mois> » en vue jour, et une icône de voiture apparaît dans
+  l'en-tête de colonne en vue semaine. Les autres paires (avec Clara) sont
+  signalées comme simples « journées alignées ».
+- **Thème sombre** : sombre par défaut, avec une bascule Sombre → Clair → Auto
+  dans l'en-tête (« Auto » suit le réglage clair/sombre du système). Le choix est
+  mémorisé, et la page est peinte dans la bonne couleur avant même le démarrage
+  de React, donc sans flash blanc. Les couleurs de cours sont adoucies en thème
+  sombre tout en gardant les mêmes teintes, pour rester reconnaissables sans
+  éblouir.
+- **Profil et accent** : le choix « Je suis Claire / Alban / Clara » est purement
+  indicatif et la couleur d'accent (rose, bleu, vert) se change en un clic. Pas
+  de code PIN : l'app se contente d'afficher des emplois du temps déjà publiés
+  par l'université, un verrou n'y protégerait rien.
 
 ## Configurer les flux `.ics`
 
@@ -98,8 +110,10 @@ scripts/fetch-schedules.js Téléchargement + parser iCal (build)
 scripts/generate-icons.js  Génération des PNG (build)
 scripts/post-build.js      Manifest PWA + balises iOS (build)
 src/config/people.js       Les trois personnes et leurs couleurs
-src/config/courseColors.js Palette et hash des codes de cours
-src/config/schedules.js    Fusion des flux, journées alignées
+src/config/courseColors.js Palette et hash des codes de cours (clair + sombre)
+src/config/schedules.js    Fusion des flux, covoiturage et journées alignées
+src/theme.js               Palettes claire et sombre, accents, ombres
+src/ctx/AppContext.jsx     Préférences (personnes, thème, mode, profil)
 src/utils/planningTime.js  Plage horaire, positions, chevauchements
 src/views/DayView.jsx      Timeline mobile
 src/views/WeekView.jsx     Semaine PC

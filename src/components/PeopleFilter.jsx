@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { AppContext } from '../ctx/AppContext';
-import { hasSchedule } from '../config/schedules';
+import { useAppTheme } from '../ctx/AppContext';
 import GlassCard from './GlassCard';
-import { COLORS, RADIUS } from '../theme';
+import { RADIUS } from '../theme';
 
 /**
  * Interrupteurs afficher / masquer par personne : on superpose les trois
@@ -13,7 +12,8 @@ import { COLORS, RADIUS } from '../theme';
  * colorés par matière).
  */
 export default function PeopleFilter({ style }) {
-  const { people, visiblePeople, togglePerson, showOnly, showAll } = useContext(AppContext);
+  const { people, visiblePeople, togglePerson, showOnly, showAll, palette } = useAppTheme();
+  const styles = useMemo(() => createStyles(palette), [palette]);
   const visibleCount = people.filter((p) => visiblePeople[p.id]).length;
 
   return (
@@ -21,28 +21,23 @@ export default function PeopleFilter({ style }) {
       <View style={styles.row}>
         {people.map((p) => {
           const on = !!visiblePeople[p.id];
-          const empty = !hasSchedule(p.id);
           return (
             <TouchableOpacity
               key={p.id}
               onPress={() => togglePerson(p.id)}
               onLongPress={() => showOnly(p.id)}
               delayLongPress={300}
-              style={[
-                styles.chip,
-                on && { backgroundColor: `${p.accent}18`, borderColor: p.accent },
-              ]}
+              style={[styles.chip, on && { backgroundColor: `${p.accent}26`, borderColor: p.accent }]}
             >
-              <View style={[styles.dot, { backgroundColor: on ? p.accent : COLORS.textMuted }]} />
+              <View style={[styles.dot, { backgroundColor: on ? p.accent : palette.textMuted }]} />
               <Text style={[styles.chipText, on && { color: p.accent }]} numberOfLines={1}>
                 {p.name}
               </Text>
               <Ionicons
                 name={on ? 'eye-outline' : 'eye-off-outline'}
                 size={14}
-                color={on ? p.accent : COLORS.textMuted}
+                color={on ? p.accent : palette.textMuted}
               />
-              {empty && <Text style={styles.emptyHint}>·</Text>}
             </TouchableOpacity>
           );
         })}
@@ -57,23 +52,23 @@ export default function PeopleFilter({ style }) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: { padding: 10 },
-  row: { flexDirection: 'row', gap: 8, justifyContent: 'center', flexWrap: 'wrap' },
-  chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: RADIUS.full,
-    borderWidth: 1,
-    borderColor: COLORS.cardBorder,
-    backgroundColor: 'rgba(255,255,255,0.5)',
-  },
-  dot: { width: 8, height: 8, borderRadius: RADIUS.full },
-  chipText: { fontSize: 13, fontWeight: '700', color: COLORS.textMuted },
-  emptyHint: { fontSize: 13, color: COLORS.textMuted },
-  resetBtn: { alignSelf: 'center', marginTop: 8 },
-  resetText: { fontSize: 11, fontWeight: '700', color: COLORS.textMuted },
-});
+const createStyles = (p) =>
+  StyleSheet.create({
+    card: { padding: 10 },
+    row: { flexDirection: 'row', gap: 8, justifyContent: 'center', flexWrap: 'wrap' },
+    chip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      paddingHorizontal: 12,
+      paddingVertical: 7,
+      borderRadius: RADIUS.full,
+      borderWidth: 1,
+      borderColor: p.cardBorder,
+      backgroundColor: p.cardSoft,
+    },
+    dot: { width: 8, height: 8, borderRadius: RADIUS.full },
+    chipText: { fontSize: 13, fontWeight: '700', color: p.textMuted },
+    resetBtn: { alignSelf: 'center', marginTop: 8 },
+    resetText: { fontSize: 11, fontWeight: '700', color: p.textMuted },
+  });

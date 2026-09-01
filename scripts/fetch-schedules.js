@@ -97,6 +97,42 @@ function parseIcsDate(value, params) {
   return { iso: `${y}-${mo}-${d}T${h}:${mi}:${s}`, allDay: false };
 }
 
+// ── Enseignants ──────────────────────────────────────────────────────────────
+
+// Le champ DESCRIPTION d'un flux ADE empile plusieurs informations, une par
+// ligne : intitulé du cours, groupe, enseignant(s), puis un pied de page
+// d'export. On retire ce qui est déjà affiché ailleurs (titre, salle) ou sans
+// intérêt, et on isole les lignes qui ressemblent à des noms d'enseignants.
+const EXPORT_LINE = /^\(?\s*export/i;
+const GROUP_LINE = /^(groupe|grp|gr\.|promo|semestre|s\d|cm\b|td\b|tp\b|ct\b)/i;
+
+function cleanDescriptionLines(description, { title, location }) {
+  return (description || '')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .filter((l) => !EXPORT_LINE.test(l))
+    .filter((l) => l !== title && l !== location);
+}
+
+// Un enseignant est écrit en capitales dans ADE ("DUPONT JEAN"), ou sous la
+// forme "M. Dupont" / "Mme Dupont". On accepte les deux et on écarte les
+// lignes de groupe ou de code de cours.
+function extractTeachers(lines) {
+  return lines.filter((line) => {
+    if (GROUP_LINE.test(line)) return false;
+    // Un nom d'enseignant ne contient pas de chiffre : cela écarte les codes
+    // de cours et les libellés de groupe ("GA1 TD1", "S5.A&B.01"…).
+    if (/\d/.test(line)) return false;
+    if (/^(M\.|Mme|Mlle|Mr)\s+\S/i.test(line)) return true;
+
+    const letters = line.replace(/[^\p{L}]/gu, '');
+    if (letters.length < 3) return false;
+    const uppercase = [...letters].filter((c) => c === c.toUpperCase() && c !== c.toLowerCase()).length;
+    return uppercase / letters.length > 0.7;
+  });
+}
+
 function parseIcs(raw) {
   const lines = unfoldLines(raw);
   const events = [];
@@ -147,15 +183,25 @@ function parseIcs(raw) {
   }
 
   events.sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : 0));
-  return events.map((e, i) => ({
-    id: e.uid || `evt-${i}`,
-    title: e.title || 'Cours',
-    location: e.location || '',
-    description: e.description || '',
-    start: e.start,
-    end: e.end || e.start,
-    allDay: !!e.allDay,
-  }));
+  return events.map((e, i) => {
+    const title = e.title || 'Cours';
+    const location = e.location || '';
+    const details = cleanDescriptionLines(e.description, { title, location });
+    const teachers = extractTeachers(details);
+    return {
+      id: e.uid || `evt-${i}`,
+      title,
+      location,
+      // Enseignants isolés pour l'affichage ; `details` conserve le reste de
+      // la description (groupe, précisions) si aucun nom n'est reconnu.
+      teachers,
+      details,
+      description: e.description || '',
+      start: e.start,
+      end: e.end || e.start,
+      allDay: !!e.allDay,
+    };
+  });
 }
 
 // ── Récupération ─────────────────────────────────────────────────────────────

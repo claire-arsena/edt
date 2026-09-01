@@ -1,12 +1,12 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { AppContext } from '../ctx/AppContext';
+import { useAppTheme } from '../ctx/AppContext';
 import { getMergedSchedule, getDayMatches } from '../config/schedules';
 import { MONTHS_SHORT_FR, WEEKDAYS_FR } from '../config/constants';
 import CourseBlock from '../components/CourseBlock';
 import PeopleFilter from '../components/PeopleFilter';
-import { COLORS, RADIUS } from '../theme';
+import { RADIUS } from '../theme';
 import {
   GRID_HEIGHT,
   HOUR_HEIGHT,
@@ -25,7 +25,8 @@ import {
  * navigation semaine par semaine.
  */
 export default function WeekView() {
-  const { visiblePeople, theme } = useContext(AppContext);
+  const { visiblePeople, theme, palette } = useAppTheme();
+  const styles = useMemo(() => createStyles(palette), [palette]);
   const [weekStart, setWeekStart] = useState(() => getMonday(new Date()));
 
   const weekDays = useMemo(
@@ -67,21 +68,21 @@ export default function WeekView() {
             style={styles.navBtn}
             accessibilityLabel="Semaine précédente"
           >
-            <Ionicons name="chevron-back" size={18} color={COLORS.text} />
+            <Ionicons name="chevron-back" size={18} color={palette.text} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setWeekStart(getMonday(new Date()))}
             style={[styles.navBtn, isCurrentWeek && { backgroundColor: theme.tint, borderColor: theme.primary }]}
             accessibilityLabel="Semaine courante"
           >
-            <Ionicons name="calendar-outline" size={18} color={isCurrentWeek ? theme.primary : COLORS.text} />
+            <Ionicons name="calendar-outline" size={18} color={isCurrentWeek ? theme.primary : palette.text} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setWeekStart(addDays(weekStart, 7))}
             style={styles.navBtn}
             accessibilityLabel="Semaine suivante"
           >
-            <Ionicons name="chevron-forward" size={18} color={COLORS.text} />
+            <Ionicons name="chevron-forward" size={18} color={palette.text} />
           </TouchableOpacity>
           <Text style={styles.rangeLabel}>{rangeLabel}</Text>
         </View>
@@ -121,7 +122,11 @@ export default function WeekView() {
                   <View style={styles.matchRow}>
                     {matches.length > 0 && (
                       <>
-                        <Ionicons name="sparkles" size={9} color={COLORS.match} />
+                        <Ionicons
+                          name={matches.some((m) => m.carpool) ? 'car-sport' : 'sparkles'}
+                          size={10}
+                          color={palette.match}
+                        />
                         {matches.map((m) => (
                           <View key={m.ids.join('-')} style={styles.matchPair}>
                             {m.accents.map((accent, i) => (
@@ -168,7 +173,7 @@ export default function WeekView() {
 
 const HEADER_HEIGHT = 54;
 
-const styles = StyleSheet.create({
+const createStyles = (p) => StyleSheet.create({
   container: { flex: 1 },
   toolbar: {
     flexDirection: 'row',
@@ -187,10 +192,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: COLORS.cardBorder,
-    backgroundColor: COLORS.card,
+    borderColor: p.cardBorder,
+    backgroundColor: p.card,
   },
-  rangeLabel: { marginLeft: 8, fontSize: 14, fontWeight: '800', color: COLORS.text },
+  rangeLabel: { marginLeft: 8, fontSize: 14, fontWeight: '800', color: p.text },
   filter: { flexGrow: 0 },
 
   gridScroll: { flex: 1, paddingHorizontal: 24 },
@@ -198,7 +203,7 @@ const styles = StyleSheet.create({
 
   hourGutter: { width: 54 },
   hourCell: { height: HOUR_HEIGHT },
-  hourLabel: { fontSize: 11, color: COLORS.textMuted, fontWeight: '600', marginTop: -6 },
+  hourLabel: { fontSize: 11, color: p.textMuted, fontWeight: '600', marginTop: -6 },
 
   dayColumn: { flex: 1, marginLeft: 8 },
   dayHeader: {
@@ -208,8 +213,8 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.sm,
     marginBottom: 4,
   },
-  dayName: { fontSize: 12, fontWeight: '800', color: COLORS.text, textTransform: 'uppercase' },
-  dayDate: { fontSize: 10, color: COLORS.textMuted, marginTop: 1 },
+  dayName: { fontSize: 12, fontWeight: '800', color: p.text, textTransform: 'uppercase' },
+  dayDate: { fontSize: 10, color: p.textMuted, marginTop: 1 },
   matchRow: { flexDirection: 'row', alignItems: 'center', gap: 4, height: 12, marginTop: 2 },
   matchPair: { flexDirection: 'row', gap: 1 },
   matchDot: { width: 6, height: 6, borderRadius: RADIUS.full },
@@ -218,7 +223,7 @@ const styles = StyleSheet.create({
     height: GRID_HEIGHT,
     position: 'relative',
     borderLeftWidth: 1,
-    borderLeftColor: COLORS.hairline,
+    borderLeftColor: p.hairline,
   },
-  hourLine: { position: 'absolute', left: 0, right: 0, height: 1, backgroundColor: COLORS.hairline },
+  hourLine: { position: 'absolute', left: 0, right: 0, height: 1, backgroundColor: p.hairline },
 });

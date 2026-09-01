@@ -1,7 +1,7 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { AppContext } from '../ctx/AppContext';
+import { useAppTheme } from '../ctx/AppContext';
 import { getMergedSchedule, getDayMatches } from '../config/schedules';
 import { getCourseColor } from '../config/courseColors';
 import { DAYS_FR, MONTHS_FR } from '../config/constants';
@@ -9,7 +9,7 @@ import GlassCard from '../components/GlassCard';
 import CourseBlock from '../components/CourseBlock';
 import MatchBanner from '../components/MatchBanner';
 import PeopleFilter from '../components/PeopleFilter';
-import { COLORS, RADIUS } from '../theme';
+import { RADIUS } from '../theme';
 import {
   GRID_HEIGHT,
   HOUR_HEIGHT,
@@ -31,7 +31,8 @@ const capitalizeFirst = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
  * créneaux positionnés à l'heure exacte, navigation jour précédent / suivant.
  */
 export default function DayView() {
-  const { visiblePeople, theme } = useContext(AppContext);
+  const { visiblePeople, theme, palette, isDark } = useAppTheme();
+  const styles = useMemo(() => createStyles(palette), [palette]);
   const [selectedDate, setSelectedDate] = useState(() => new Date());
 
   const dateStr = formatLocalDate(selectedDate);
@@ -41,10 +42,10 @@ export default function DayView() {
   // "mardi 1 septembre 2026" → "Mardi 1 septembre 2026" (seule l'initiale
   // prend la majuscule, contrairement à un textTransform: capitalize qui
   // capitaliserait aussi le mois).
-  const formattedDate = capitalizeFirst(
+  const dayLabel =
     `${DAYS_FR[selectedDate.getDay()]} ${selectedDate.getDate()} ` +
-      `${MONTHS_FR[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`
-  );
+    `${MONTHS_FR[selectedDate.getMonth()]}`;
+  const formattedDate = capitalizeFirst(`${dayLabel} ${selectedDate.getFullYear()}`);
 
   const events = useMemo(() => getMergedSchedule(visiblePeople), [visiblePeople]);
 
@@ -114,14 +115,14 @@ export default function DayView() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <MatchBanner matches={matches} style={styles.banner} />
+        <MatchBanner matches={matches} dateLabel={dayLabel} style={styles.banner} />
 
         {allDayEvents.length > 0 && (
           <GlassCard style={styles.sectionCard}>
             <Text style={styles.sectionTitle}>Toute la journée ({allDayEvents.length})</Text>
             <View style={styles.allDayList}>
               {allDayEvents.map((evt) => {
-                const color = getCourseColor(evt.title);
+                const color = getCourseColor(evt.title, isDark);
                 return (
                   <View key={`${evt.personId}-${evt.id}`} style={[styles.allDayItem, { borderLeftColor: color }]}>
                     <View style={[styles.personDot, { backgroundColor: evt.personAccent }]} />
@@ -171,7 +172,7 @@ export default function DayView() {
 
             {dayEvents.length === 0 && (
               <View style={styles.emptyWrap} pointerEvents="none">
-                <Ionicons name="calendar-clear-outline" size={36} color={COLORS.textMuted} />
+                <Ionicons name="calendar-clear-outline" size={36} color={palette.textMuted} />
                 <Text style={styles.emptyText}>Aucun cours ce jour-là</Text>
               </View>
             )}
@@ -182,14 +183,14 @@ export default function DayView() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (p) => StyleSheet.create({
   container: { flex: 1 },
   stickyTop: { paddingHorizontal: 16, paddingTop: 8, gap: 10, zIndex: 10 },
   navCard: { padding: 14 },
   navRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   navBtn: { padding: 8, borderRadius: RADIUS.full },
   dateInfo: { alignItems: 'center', flex: 1 },
-  dateTitle: { fontSize: 15, fontWeight: '800', color: COLORS.text, textAlign: 'center' },
+  dateTitle: { fontSize: 15, fontWeight: '800', color: p.text, textAlign: 'center' },
   todayBadge: { fontSize: 10, fontWeight: '800', textTransform: 'uppercase', marginTop: 2 },
   todayBtn: {
     alignSelf: 'center',
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
   banner: { marginBottom: 12 },
 
   sectionCard: { padding: 14, marginBottom: 12 },
-  sectionTitle: { fontSize: 14, fontWeight: '800', color: COLORS.text },
+  sectionTitle: { fontSize: 14, fontWeight: '800', color: p.text },
   allDayList: { gap: 8, marginTop: 10 },
   allDayItem: {
     flexDirection: 'row',
@@ -214,18 +215,18 @@ const styles = StyleSheet.create({
     gap: 8,
     padding: 10,
     borderRadius: RADIUS.sm,
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: p.cardSoft,
     borderLeftWidth: 4,
   },
   personDot: { width: 8, height: 8, borderRadius: RADIUS.full },
-  allDayText: { flex: 1, fontSize: 13, fontWeight: '600', color: COLORS.text },
+  allDayText: { flex: 1, fontSize: 13, fontWeight: '600', color: p.text },
 
   timelineCard: { padding: 14 },
   timeline: { height: GRID_HEIGHT + 12, marginTop: 12, position: 'relative' },
   hourRow: { position: 'absolute', left: 0, right: 0, flexDirection: 'row', alignItems: 'flex-start' },
-  hourLabel: { width: 44, fontSize: 11, color: COLORS.textMuted, fontWeight: '600', marginTop: -6 },
-  hourLine: { flex: 1, height: 1, backgroundColor: COLORS.hairline },
-  nowLine: { position: 'absolute', left: GUTTER, right: 0, height: 2, backgroundColor: COLORS.now, zIndex: 5 },
+  hourLabel: { width: 44, fontSize: 11, color: p.textMuted, fontWeight: '600', marginTop: -6 },
+  hourLine: { flex: 1, height: 1, backgroundColor: p.hairline },
+  nowLine: { position: 'absolute', left: GUTTER, right: 0, height: 2, backgroundColor: p.now, zIndex: 5 },
   nowDot: {
     position: 'absolute',
     left: -4,
@@ -233,9 +234,9 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: RADIUS.full,
-    backgroundColor: COLORS.now,
+    backgroundColor: p.now,
   },
   eventsLayer: { position: 'absolute', left: GUTTER, right: 0, top: 0, height: GRID_HEIGHT },
   emptyWrap: { position: 'absolute', top: 90, left: 0, right: 0, alignItems: 'center' },
-  emptyText: { marginTop: 6, fontSize: 12, color: COLORS.textMuted, fontWeight: '600' },
+  emptyText: { marginTop: 6, fontSize: 12, color: p.textMuted, fontWeight: '600' },
 });

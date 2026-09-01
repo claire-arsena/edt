@@ -15,6 +15,21 @@ const COURSE_PALETTE = [
   '#22b0a3', // sarcelle
 ];
 
+// Mélange une couleur vers le fond sombre : mêmes teintes, donc mêmes
+// repères visuels d'une vue à l'autre, mais des aplats moins éblouissants sur
+// un écran foncé.
+function blendToward(hex, target, amount) {
+  const parse = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const [r, g, b] = parse(hex);
+  const [tr, tg, tb] = parse(target);
+  const mix = (c, t) => Math.round(c + (t - c) * amount);
+  return `#${[mix(r, tr), mix(g, tg), mix(b, tb)]
+    .map((c) => c.toString(16).padStart(2, '0'))
+    .join('')}`;
+}
+
+const COURSE_PALETTE_DARK = COURSE_PALETTE.map((c) => blendToward(c, '#15151a', 0.26));
+
 // Extrait le code de cours en tête du titre ("S5.A&B.01" dans
 // "S5.A&B.01 Autonomie IUT GA1"). À défaut de code, le titre complet sert de
 // clé de regroupement.
@@ -32,10 +47,11 @@ function hashString(str) {
   return Math.abs(hash);
 }
 
-export function getCourseColor(title) {
+export function getCourseColor(title, isDark = false) {
+  const palette = isDark ? COURSE_PALETTE_DARK : COURSE_PALETTE;
   const key = getCourseKey(title);
-  if (!key) return COURSE_PALETTE[0];
-  return COURSE_PALETTE[hashString(key) % COURSE_PALETTE.length];
+  if (!key) return palette[0];
+  return palette[hashString(key) % palette.length];
 }
 
 // Titre débarrassé du code de cours (déjà porté par la couleur du bloc), pour
