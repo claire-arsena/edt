@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Emplois du temps",
+    "slug": "edt",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#f2f2f7"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.claire.edt",
+      "icon": "./assets/icon.png"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#f2f2f7"
+      },
+      "package": "com.claire.edt"
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png",
+      "name": "Emplois du temps",
+      "shortName": "EDT",
+      "description": "Les emplois du temps de Claire, Alban et Clara",
+      "lang": "fr",
+      "backgroundColor": "#f2f2f7",
+      "themeColor": "#d81b60",
+      "display": "standalone",
+      "scope": "/",
+      "startUrl": "/"
+    },
+    "plugins": []
+  }
+}
