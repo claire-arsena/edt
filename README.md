@@ -24,17 +24,30 @@ l'app affiche directement la semaine, sans écran d'accueil intermédiaire.
 - **Interrupteurs par personne** : afficher / masquer Claire, Alban ou Clara pour
   superposer ou isoler les emplois du temps (appui long sur un nom = n'afficher
   que cette personne). Le choix est mémorisé sur l'appareil.
-- **Couleurs par cours** : la couleur d'un bloc vient d'un hash du code de cours
-  (`S5.A&B.01`, `R5.A.L1`…), donc toutes les séances d'un même cours (CM, TD, TP)
-  partagent la même couleur, identique en vue jour et en vue semaine. La pastille
-  dans le coin du bloc indique, elle, à qui appartient le créneau.
-- **Cours simultanés** : quand deux emplois du temps se chevauchent, les blocs se
-  partagent la largeur au lieu de se recouvrir.
+- **Une couleur par cours, une palette par personne** : chaque personne a sa
+  famille de couleurs — Claire en pastel, Alban en couleurs d'hiver, Clara en
+  couleurs d'été — et à l'intérieur de cette famille, chaque code de cours
+  (`R1.08`, `R5.A.L1`, `S5.A&B.01`…) reçoit sa propre couleur. Toutes les séances
+  d'un même module (CM, TD, TP) sont donc du même ton, identique en vue jour et
+  en vue semaine. Les couleurs sont attribuées à partir des cours réellement
+  présents dans le flux, pas par un simple hash : deux cours différents ne
+  tombent pas sur la même couleur tant qu'une personne en a au plus dix. Le texte
+  du bloc passe automatiquement en sombre sur les fonds clairs (pastels, jaunes)
+  pour rester lisible.
+- **Une colonne par personne** : chaque emploi du temps garde sa colonne à
+  l'intérieur d'une journée, même quand les autres n'ont pas cours — les blocs ne
+  se déplacent pas d'un jour à l'autre. Si une personne a deux cours simultanés,
+  seule sa propre colonne se subdivise.
+- **Détail au clic** : un clic sur un créneau ouvre sa fiche — intitulé complet,
+  date et horaire en toutes lettres, enseignants, salle, et le reste de la
+  description du flux (groupe, promotion).
 - **Enseignants** : les noms de profs sont extraits du champ `DESCRIPTION` du
-  flux ADE (formats « DUPONT JEAN » et « M. Dupont » reconnus, codes de cours et
-  libellés de groupe écartés) et affichés dans le bloc dès que sa hauteur le
-  permet. Si aucun nom n'est reconnu, la première ligne utile de la description
-  est affichée à la place.
+  flux ADE et affichés dans le bloc dès que sa hauteur le permet. Les marqueurs
+  de groupe en tête de ligne sont retirés (`A A RISCH Vincent` → `RISCH
+  Vincent`), et les lignes contenant un chiffre (`A1-2`, `3ème Année`,
+  `TP I-009`) sont écartées : il reste les vrais noms, au format `NOM Prénom` ou
+  `M. Dupont`. Si aucun nom n'est reconnu — cas d'une autonomie libre sans
+  encadrant — la première ligne utile de la description prend le relais.
 - **Covoiturage Claire / Alban** : quand leurs deux journées commencent *et*
   finissent à moins d'une heure d'écart, un bandeau annonce « Covoiturage
   possible le <jour> <mois> » en vue jour, et une icône de voiture apparaît dans

@@ -115,22 +115,28 @@ function cleanDescriptionLines(description, { title, location }) {
     .filter((l) => l !== title && l !== location);
 }
 
-// Un enseignant est écrit en capitales dans ADE ("DUPONT JEAN"), ou sous la
-// forme "M. Dupont" / "Mme Dupont". On accepte les deux et on écarte les
-// lignes de groupe ou de code de cours.
-function extractTeachers(lines) {
-  return lines.filter((line) => {
-    if (GROUP_LINE.test(line)) return false;
-    // Un nom d'enseignant ne contient pas de chiffre : cela écarte les codes
-    // de cours et les libellés de groupe ("GA1 TD1", "S5.A&B.01"…).
-    if (/\d/.test(line)) return false;
-    if (/^(M\.|Mme|Mlle|Mr)\s+\S/i.test(line)) return true;
+// Marqueurs de groupe ADE isolés en tête de ligne ("A A RISCH Vincent",
+// "A SLEZAK Eileen") : une lettre seule ne porte pas d'information utile ici.
+function stripGroupMarkers(line) {
+  const tokens = line.split(/\s+/);
+  let i = 0;
+  while (i < tokens.length && /^[A-Z]$/.test(tokens[i])) i++;
+  return tokens.slice(i).join(' ');
+}
 
-    const letters = line.replace(/[^\p{L}]/gu, '');
-    if (letters.length < 3) return false;
-    const uppercase = [...letters].filter((c) => c === c.toUpperCase() && c !== c.toLowerCase()).length;
-    return uppercase / letters.length > 0.7;
-  });
+// Un enseignant s'écrit "NOM Prénom" (le nom de famille en capitales) ou
+// "M. Dupont". Les lignes de groupe et de salle contiennent presque toujours
+// un chiffre ("A1-2", "3ème Année", "TP I-009", "GMP_205"), ce qui suffit à
+// les écarter.
+function looksLikeTeacher(line) {
+  if (!line || GROUP_LINE.test(line)) return false;
+  if (/\d/.test(line)) return false;
+  if (/^(M\.|Mme|Mlle|Mr)\s+\S/i.test(line)) return true;
+  return line.split(/\s+/).some((word) => word.length >= 2 && /^\p{Lu}+$/u.test(word));
+}
+
+function extractTeachers(lines) {
+  return lines.map(stripGroupMarkers).filter(looksLikeTeacher);
 }
 
 function parseIcs(raw) {

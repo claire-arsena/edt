@@ -5,6 +5,7 @@ import { useAppTheme } from '../ctx/AppContext';
 import { getMergedSchedule, getDayMatches } from '../config/schedules';
 import { MONTHS_SHORT_FR, WEEKDAYS_FR } from '../config/constants';
 import CourseBlock from '../components/CourseBlock';
+import CourseDetailModal from '../components/CourseDetailModal';
 import PeopleFilter from '../components/PeopleFilter';
 import { RADIUS } from '../theme';
 import {
@@ -16,7 +17,7 @@ import {
   formatLocalDate,
   getEventPosition,
   getMonday,
-  layoutOverlaps,
+  layoutByPerson,
 } from '../utils/planningTime';
 
 /**
@@ -25,7 +26,15 @@ import {
  * navigation semaine par semaine.
  */
 export default function WeekView() {
-  const { visiblePeople, theme, palette } = useAppTheme();
+  const { visiblePeople, theme, palette, people } = useAppTheme();
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  // Ordre des colonnes internes : une par personne affichée, toujours la même
+  // place, y compris les jours où elle n'a pas cours.
+  const visibleIds = useMemo(
+    () => people.filter((p) => visiblePeople[p.id]).map((p) => p.id),
+    [people, visiblePeople]
+  );
   const styles = useMemo(() => createStyles(palette), [palette]);
   const [weekStart, setWeekStart] = useState(() => getMonday(new Date()));
 
@@ -52,9 +61,9 @@ export default function WeekView() {
       const key = formatLocalDate(new Date(evt.start));
       if (map.has(key)) map.get(key).push(evt);
     });
-    map.forEach((list, key) => map.set(key, layoutOverlaps(list)));
+    map.forEach((list, key) => map.set(key, layoutByPerson(list, visibleIds)));
     return map;
-  }, [events, weekDays]);
+  }, [events, weekDays, visibleIds]);
 
   const todayStr = formatLocalDate(new Date());
   const isCurrentWeek = formatLocalDate(getMonday(new Date())) === formatLocalDate(weekStart);
@@ -149,15 +158,16 @@ export default function WeekView() {
 
                   {dayEvents.map((evt) => {
                     const pos = getEventPosition(evt);
-                    const widthPct = 100 / evt.laneCount;
+                    const unit = 100 / evt.laneCount;
                     return (
                       <CourseBlock
                         key={`${evt.personId}-${evt.id}`}
                         event={{ ...evt, top: pos.top }}
                         height={pos.height}
-                        left={`${evt.lane * widthPct}%`}
-                        width={`${widthPct}%`}
+                        left={`${evt.lane * unit}%`}
+                        width={`${unit * evt.laneSpan}%`}
                         compact={evt.laneCount > 1}
+                        onPress={setSelectedEvent}
                       />
                     );
                   })}
@@ -167,6 +177,8 @@ export default function WeekView() {
           })}
         </View>
       </ScrollView>
+
+      <CourseDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
     </View>
   );
 }

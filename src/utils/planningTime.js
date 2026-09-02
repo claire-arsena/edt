@@ -15,6 +15,12 @@ export const formatHM = (iso) => {
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 };
 
+// Notation française des horaires de cours ("13h30"), comme sur l'export ADE.
+export const formatHMFr = (iso) => {
+  const d = new Date(iso);
+  return `${String(d.getHours()).padStart(2, '0')}h${String(d.getMinutes()).padStart(2, '0')}`;
+};
+
 export const addDays = (date, n) => {
   const d = new Date(date);
   d.setDate(d.getDate() + n);
@@ -92,6 +98,30 @@ export function layoutOverlaps(events) {
     clusterEnd = clusterEnd && clusterEnd > end ? clusterEnd : end;
   });
   if (cluster.length > 0) flush();
+
+  return out;
+}
+
+// Une colonne fixe par personne affichée : l'emploi du temps de chacun garde
+// sa place, même quand les autres n'ont pas cours ce jour-là. À l'intérieur de
+// sa colonne, une personne qui aurait deux cours simultanés voit sa colonne
+// se subdiviser.
+export function layoutByPerson(events, personIds) {
+  const laneCount = Math.max(personIds.length, 1);
+  const out = [];
+
+  personIds.forEach((personId, laneIndex) => {
+    const own = events.filter((e) => e.personId === personId);
+    layoutOverlaps(own).forEach((evt) => {
+      out.push({
+        ...evt,
+        // Position fractionnaire : colonne de la personne + sous-colonne.
+        lane: laneIndex + evt.lane / evt.laneCount,
+        laneSpan: 1 / evt.laneCount,
+        laneCount,
+      });
+    });
+  });
 
   return out;
 }

@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
-import { getCourseColor, getDisplayTitle } from '../config/courseColors';
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { getCourseColor, getDisplayTitle, getTextOnCourse } from '../config/courseColors';
 import { useAppTheme } from '../ctx/AppContext';
-import { formatHM } from '../utils/planningTime';
+import { formatHMFr } from '../utils/planningTime';
 import { RADIUS } from '../theme';
 
 /**
@@ -10,17 +10,20 @@ import { RADIUS } from '../theme';
  * horaire. La couleur vient du code de cours (identique en vue jour et en vue
  * semaine) ; la pastille d'angle rappelle, elle, la personne concernée.
  */
-export default function CourseBlock({ event, height, width, left, compact = false }) {
+export default function CourseBlock({ event, height, width, left, compact = false, onPress }) {
   const { palette, shadows, isDark } = useAppTheme();
   const styles = useMemo(() => createStyles(palette, shadows), [palette, shadows]);
-  const color = getCourseColor(event.title, isDark);
+  const color = getCourseColor(event.title, isDark, event.personId);
+  const ink = getTextOnCourse(color);
   const title = getDisplayTitle(event.title);
   // Les enseignants viennent de la DESCRIPTION du flux ; à défaut de nom
   // reconnu, on retombe sur la première ligne utile de la description.
   const teachers = (event.teachers?.length ? event.teachers : event.details?.slice(0, 1) || []).join(', ');
 
   return (
-    <View
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={() => onPress?.(event)}
       style={[
         styles.block,
         { top: event.top, height, backgroundColor: color },
@@ -29,35 +32,38 @@ export default function CourseBlock({ event, height, width, left, compact = fals
       ]}
     >
       <View style={styles.headerRow}>
-        <Text style={[styles.title, compact && styles.titleCompact]} numberOfLines={height > 60 ? 3 : 1}>
+        <Text
+          style={[styles.title, { color: ink.strong }, compact && styles.titleCompact]}
+          numberOfLines={height > 60 ? 3 : 1}
+        >
           {title}
         </Text>
         {!!event.personAccent && (
-          <View style={[styles.personDot, { backgroundColor: event.personAccent }]} />
+          <View style={[styles.personDot, { backgroundColor: event.personAccent, borderColor: ink.dot }]} />
         )}
       </View>
 
       {height > 44 && (
-        <Text style={styles.time}>
-          {formatHM(event.start)} – {formatHM(event.end)}
+        <Text style={[styles.time, { color: ink.strong }]}>
+          {formatHMFr(event.start)} – {formatHMFr(event.end)}
         </Text>
       )}
       {height > 62 && !!event.location && (
-        <Text style={styles.meta} numberOfLines={1}>
+        <Text style={[styles.meta, { color: ink.soft }]} numberOfLines={1}>
           {event.location}
         </Text>
       )}
       {height > 78 && !!teachers && (
-        <Text style={styles.teacher} numberOfLines={1}>
+        <Text style={[styles.teacher, { color: ink.soft }]} numberOfLines={1}>
           {teachers}
         </Text>
       )}
       {height > (teachers ? 96 : 78) && (
-        <Text style={styles.person} numberOfLines={1}>
+        <Text style={[styles.person, { color: ink.soft }]} numberOfLines={1}>
           {event.personName}
         </Text>
       )}
-    </View>
+    </TouchableOpacity>
   );
 }
 

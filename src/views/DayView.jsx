@@ -7,6 +7,7 @@ import { getCourseColor } from '../config/courseColors';
 import { DAYS_FR, MONTHS_FR } from '../config/constants';
 import GlassCard from '../components/GlassCard';
 import CourseBlock from '../components/CourseBlock';
+import CourseDetailModal from '../components/CourseDetailModal';
 import MatchBanner from '../components/MatchBanner';
 import PeopleFilter from '../components/PeopleFilter';
 import { RADIUS } from '../theme';
@@ -19,7 +20,7 @@ import {
   addDays,
   formatLocalDate,
   getEventPosition,
-  layoutOverlaps,
+  layoutByPerson,
 } from '../utils/planningTime';
 
 const GUTTER = 48;
@@ -31,7 +32,15 @@ const capitalizeFirst = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
  * créneaux positionnés à l'heure exacte, navigation jour précédent / suivant.
  */
 export default function DayView() {
-  const { visiblePeople, theme, palette, isDark } = useAppTheme();
+  const { visiblePeople, theme, palette, isDark, people } = useAppTheme();
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  // Une colonne par personne affichée, à place fixe : celle qui n'a pas cours
+  // laisse sa colonne vide au lieu de céder la largeur aux autres.
+  const visibleIds = useMemo(
+    () => people.filter((p) => visiblePeople[p.id]).map((p) => p.id),
+    [people, visiblePeople]
+  );
   const styles = useMemo(() => createStyles(palette), [palette]);
   const [selectedDate, setSelectedDate] = useState(() => new Date());
 
@@ -54,8 +63,8 @@ export default function DayView() {
     [events, dateStr]
   );
   const timedEvents = useMemo(
-    () => layoutOverlaps(dayEvents.filter((e) => !e.allDay)),
-    [dayEvents]
+    () => layoutByPerson(dayEvents.filter((e) => !e.allDay), visibleIds),
+    [dayEvents, visibleIds]
   );
   const allDayEvents = useMemo(() => dayEvents.filter((e) => e.allDay), [dayEvents]);
 
@@ -122,7 +131,7 @@ export default function DayView() {
             <Text style={styles.sectionTitle}>Toute la journée ({allDayEvents.length})</Text>
             <View style={styles.allDayList}>
               {allDayEvents.map((evt) => {
-                const color = getCourseColor(evt.title, isDark);
+                const color = getCourseColor(evt.title, isDark, evt.personId);
                 return (
                   <View key={`${evt.personId}-${evt.id}`} style={[styles.allDayItem, { borderLeftColor: color }]}>
                     <View style={[styles.personDot, { backgroundColor: evt.personAccent }]} />
@@ -136,6 +145,22 @@ export default function DayView() {
 
         <GlassCard style={styles.timelineCard}>
           <Text style={styles.sectionTitle}>Cours de la journée</Text>
+
+          {visibleIds.length > 1 && (
+            <View style={styles.laneHeader}>
+              {visibleIds.map((id) => {
+                const person = people.find((p) => p.id === id);
+                return (
+                  <View key={id} style={styles.laneHeaderCell}>
+                    <View style={[styles.laneDot, { backgroundColor: person.accent }]} />
+                    <Text style={[styles.laneName, { color: person.accent }]} numberOfLines={1}>
+                      {person.name}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+          )}
 
           <View style={styles.timeline}>
             {/* Graduation horaire 8h → 23h */}
@@ -156,15 +181,16 @@ export default function DayView() {
             <View style={styles.eventsLayer}>
               {timedEvents.map((evt) => {
                 const pos = getEventPosition(evt);
-                const widthPct = 100 / evt.laneCount;
+                const unit = 100 / evt.laneCount;
                 return (
                   <CourseBlock
                     key={`${evt.personId}-${evt.id}`}
                     event={{ ...evt, top: pos.top }}
                     height={pos.height}
-                    left={`${evt.lane * widthPct}%`}
-                    width={`${widthPct}%`}
+                    left={`${evt.lane * unit}%`}
+                    width={`${unit * evt.laneSpan}%`}
                     compact={evt.laneCount > 2}
+                    onPress={setSelectedEvent}
                   />
                 );
               })}
@@ -179,6 +205,8 @@ export default function DayView() {
           </View>
         </GlassCard>
       </ScrollView>
+
+      <CourseDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
     </View>
   );
 }
@@ -222,6 +250,10 @@ const createStyles = (p) => StyleSheet.create({
   allDayText: { flex: 1, fontSize: 13, fontWeight: '600', color: p.text },
 
   timelineCard: { padding: 14 },
+  laneHeader: { flexDirection: 'row', marginLeft: 48, marginTop: 10, gap: 3 },
+  laneHeaderCell: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4 },
+  laneDot: { width: 7, height: 7, borderRadius: 999 },
+  laneName: { fontSize: 11, fontWeight: '800' },
   timeline: { height: GRID_HEIGHT + 12, marginTop: 12, position: 'relative' },
   hourRow: { position: 'absolute', left: 0, right: 0, flexDirection: 'row', alignItems: 'flex-start' },
   hourLabel: { width: 44, fontSize: 11, color: p.textMuted, fontWeight: '600', marginTop: -6 },
