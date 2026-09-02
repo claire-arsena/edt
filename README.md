@@ -15,11 +15,16 @@ donc rafraîchis à chaque déploiement.
 
 | Largeur d'écran | Vue |
 | --- | --- |
-| < 900 px (mobile) | Timeline jour par jour, 8h → 23h, navigation jour précédent / suivant, cadre centré type application |
-| ≥ 900 px (PC) | Semaine du lundi au vendredi en 5 colonnes, même plage horaire, navigation semaine par semaine, plein écran |
+| < 900 px (mobile) | Timeline jour par jour, 8h → 18h, tenant en entier dans l'écran sans défilement, navigation jour précédent / suivant, cadre centré type application |
+| ≥ 900 px (PC) | Semaine du lundi au vendredi en 5 colonnes, même plage horaire (8h → 18h), navigation semaine par semaine, plein écran |
 
 La vue est choisie à partir de la largeur de la fenêtre : ouverte depuis un PC,
 l'app affiche directement la semaine, sans écran d'accueil intermédiaire.
+
+Sur mobile, la hauteur d'une heure n'est pas fixe : elle se déduit de la place
+réellement laissée par les cartes du haut, mesurée à l'affichage. La journée
+entière tient donc à l'écran, du plus petit téléphone à la tablette, sans
+défilement — vérifié sur 375×667, 390×750 et 412×800.
 
 - **Interrupteurs par personne** : afficher / masquer Claire, Alban ou Clara pour
   superposer ou isoler les emplois du temps (appui long sur un nom = n'afficher

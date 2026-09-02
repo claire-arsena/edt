@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppTheme } from '../ctx/AppContext';
 import { getMergedSchedule, getDayMatches } from '../config/schedules';
@@ -12,8 +12,6 @@ import MatchBanner from '../components/MatchBanner';
 import PeopleFilter from '../components/PeopleFilter';
 import { RADIUS } from '../theme';
 import {
-  GRID_HEIGHT,
-  HOUR_HEIGHT,
   START_HOUR,
   END_HOUR,
   TOTAL_HOURS,
@@ -23,17 +21,23 @@ import {
   layoutByPerson,
 } from '../utils/planningTime';
 
-const GUTTER = 48;
+const GUTTER = 44;
+const MIN_HOUR_HEIGHT = 26;
 
 const capitalizeFirst = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
 /**
- * Vue mobile : timeline jour par jour, colonne des heures à gauche (8h → 23h),
- * créneaux positionnés à l'heure exacte, navigation jour précédent / suivant.
+ * Vue mobile : la journée en entier, de 8h à 18h, sans défilement. La hauteur
+ * d'une heure se déduit de la place restante sous les cartes du haut, mesurée
+ * à l'affichage — la timeline s'adapte donc à la taille de l'écran plutôt que
+ * de déborder.
  */
 export default function DayView() {
   const { visiblePeople, theme, palette, isDark, people } = useAppTheme();
+  const [selectedDate, setSelectedDate] = useState(() => new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [gridHeight, setGridHeight] = useState(0);
+  const styles = useMemo(() => createStyles(palette), [palette]);
 
   // Une colonne par personne affichée, à place fixe : celle qui n'a pas cours
   // laisse sa colonne vide au lieu de céder la largeur aux autres.
@@ -41,23 +45,15 @@ export default function DayView() {
     () => people.filter((p) => visiblePeople[p.id]).map((p) => p.id),
     [people, visiblePeople]
   );
-  const styles = useMemo(() => createStyles(palette), [palette]);
-  const [selectedDate, setSelectedDate] = useState(() => new Date());
 
   const dateStr = formatLocalDate(selectedDate);
-  const todayStr = formatLocalDate(new Date());
-  const isToday = dateStr === todayStr;
+  const isToday = dateStr === formatLocalDate(new Date());
 
-  // "mardi 1 septembre 2026" → "Mardi 1 septembre 2026" (seule l'initiale
-  // prend la majuscule, contrairement à un textTransform: capitalize qui
-  // capitaliserait aussi le mois).
   const dayLabel =
-    `${DAYS_FR[selectedDate.getDay()]} ${selectedDate.getDate()} ` +
-    `${MONTHS_FR[selectedDate.getMonth()]}`;
+    `${DAYS_FR[selectedDate.getDay()]} ${selectedDate.getDate()} ${MONTHS_FR[selectedDate.getMonth()]}`;
   const formattedDate = capitalizeFirst(`${dayLabel} ${selectedDate.getFullYear()}`);
 
   const events = useMemo(() => getMergedSchedule(visiblePeople), [visiblePeople]);
-
   const dayEvents = useMemo(
     () => events.filter((e) => formatLocalDate(new Date(e.start)) === dateStr),
     [events, dateStr]
@@ -67,208 +63,178 @@ export default function DayView() {
     [dayEvents, visibleIds]
   );
   const allDayEvents = useMemo(() => dayEvents.filter((e) => e.allDay), [dayEvents]);
-
   const matches = useMemo(() => getDayMatches(dateStr, visiblePeople), [dateStr, visiblePeople]);
 
-  // Ligne de l'heure courante, uniquement sur la journée d'aujourd'hui.
+  // Hauteur d'une heure déduite de la place mesurée ; tant que la mesure n'a
+  // pas eu lieu, rien n'est positionné (évite un saut au premier rendu).
+  const hourHeight = gridHeight > 0 ? Math.max(MIN_HOUR_HEIGHT, gridHeight / TOTAL_HOURS) : 0;
+
   const now = new Date();
   const showNowLine = isToday && now.getHours() >= START_HOUR && now.getHours() < END_HOUR;
-  const nowTop = (now.getHours() - START_HOUR) * HOUR_HEIGHT + (now.getMinutes() / 60) * HOUR_HEIGHT;
+  const nowTop = (now.getHours() - START_HOUR + now.getMinutes() / 60) * hourHeight;
 
   return (
     <View style={styles.container}>
-      <View style={styles.stickyTop}>
-        <GlassCard style={styles.navCard}>
-          <View style={styles.navRow}>
-            <TouchableOpacity
-              onPress={() => setSelectedDate(addDays(selectedDate, -1))}
-              style={[styles.navBtn, { backgroundColor: theme.tint }]}
-              accessibilityLabel="Jour précédent"
-            >
-              <Ionicons name="chevron-back" size={20} color={theme.primary} />
-            </TouchableOpacity>
+      <GlassCard style={styles.navCard}>
+        <View style={styles.navRow}>
+          <TouchableOpacity
+            onPress={() => setSelectedDate(addDays(selectedDate, -1))}
+            style={[styles.navBtn, { backgroundColor: theme.tint }]}
+            accessibilityLabel="Jour précédent"
+          >
+            <Ionicons name="chevron-back" size={18} color={theme.primary} />
+          </TouchableOpacity>
 
-            <View style={styles.dateInfo}>
-              <Text style={styles.dateTitle}>{formattedDate}</Text>
-              {isToday && (
-                <Text style={[styles.todayBadge, { color: theme.primary }]}>Aujourd'hui</Text>
-              )}
+          {/* La date ramène à aujourd'hui : un bouton de moins à l'écran. */}
+          <TouchableOpacity
+            style={styles.dateInfo}
+            onPress={() => setSelectedDate(new Date())}
+            accessibilityLabel="Revenir à aujourd'hui"
+          >
+            <Text style={styles.dateTitle} numberOfLines={1}>{formattedDate}</Text>
+            <Text style={[styles.dateHint, { color: theme.primary }]}>
+              {isToday ? "AUJOURD'HUI" : "↩ REVENIR À AUJOURD'HUI"}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setSelectedDate(addDays(selectedDate, 1))}
+            style={[styles.navBtn, { backgroundColor: theme.tint }]}
+            accessibilityLabel="Jour suivant"
+          >
+            <Ionicons name="chevron-forward" size={18} color={theme.primary} />
+          </TouchableOpacity>
+        </View>
+      </GlassCard>
+
+      <PeopleFilter compact style={styles.filter} />
+
+      <MatchBanner compact matches={matches} dateLabel={dayLabel} style={styles.banner} />
+
+      {allDayEvents.length > 0 && (
+        <View style={styles.allDayRow}>
+          {allDayEvents.map((evt) => (
+            <View
+              key={`${evt.personId}-${evt.id}`}
+              style={[styles.allDayChip, { backgroundColor: getCourseColor(evt.title, isDark, evt.personId) }]}
+            >
+              <Text style={styles.allDayText} numberOfLines={1}>{evt.title}</Text>
             </View>
+          ))}
+        </View>
+      )}
 
-            <TouchableOpacity
-              onPress={() => setSelectedDate(addDays(selectedDate, 1))}
-              style={[styles.navBtn, { backgroundColor: theme.tint }]}
-              accessibilityLabel="Jour suivant"
-            >
-              <Ionicons name="chevron-forward" size={20} color={theme.primary} />
-            </TouchableOpacity>
+      <GlassCard style={styles.timelineCard}>
+        {visibleIds.length > 1 && (
+          <View style={styles.laneHeader}>
+            {visibleIds.map((id) => {
+              const person = people.find((p) => p.id === id);
+              return (
+                <View key={id} style={styles.laneHeaderCell}>
+                  <View style={[styles.laneDot, { backgroundColor: person.accent }]} />
+                  <Text style={[styles.laneName, { color: person.accent }]} numberOfLines={1}>
+                    {person.name}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
-
-          {!isToday && (
-            <TouchableOpacity
-              style={[styles.todayBtn, { backgroundColor: theme.tint }]}
-              onPress={() => setSelectedDate(new Date())}
-            >
-              <Text style={[styles.todayBtnText, { color: theme.primary }]}>
-                Revenir à aujourd'hui
-              </Text>
-            </TouchableOpacity>
-          )}
-        </GlassCard>
-
-        <PeopleFilter style={styles.filter} />
-      </View>
-
-      <ScrollView
-        style={styles.scrollArea}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <MatchBanner matches={matches} dateLabel={dayLabel} style={styles.banner} />
-
-        {allDayEvents.length > 0 && (
-          <GlassCard style={styles.sectionCard}>
-            <Text style={styles.sectionTitle}>Toute la journée ({allDayEvents.length})</Text>
-            <View style={styles.allDayList}>
-              {allDayEvents.map((evt) => {
-                const color = getCourseColor(evt.title, isDark, evt.personId);
-                return (
-                  <View key={`${evt.personId}-${evt.id}`} style={[styles.allDayItem, { borderLeftColor: color }]}>
-                    <View style={[styles.personDot, { backgroundColor: evt.personAccent }]} />
-                    <Text style={styles.allDayText} numberOfLines={1}>{evt.title}</Text>
-                  </View>
-                );
-              })}
-            </View>
-          </GlassCard>
         )}
 
-        <GlassCard style={styles.timelineCard}>
-          <Text style={styles.sectionTitle}>Cours de la journée</Text>
+        <View
+          style={styles.timeline}
+          onLayout={(e) => setGridHeight(e.nativeEvent.layout.height)}
+        >
+          {hourHeight > 0 && (
+            <>
+              {Array.from({ length: TOTAL_HOURS + 1 }, (_, i) => (
+                <View key={i} style={[styles.hourRow, { top: i * hourHeight }]}>
+                  <Text style={styles.hourLabel}>{String(START_HOUR + i).padStart(2, '0')}h</Text>
+                  <View style={styles.hourLine} />
+                </View>
+              ))}
 
-          {visibleIds.length > 1 && (
-            <View style={styles.laneHeader}>
-              {visibleIds.map((id) => {
-                const person = people.find((p) => p.id === id);
-                return (
-                  <View key={id} style={styles.laneHeaderCell}>
-                    <View style={[styles.laneDot, { backgroundColor: person.accent }]} />
-                    <Text style={[styles.laneName, { color: person.accent }]} numberOfLines={1}>
-                      {person.name}
-                    </Text>
-                  </View>
-                );
-              })}
-            </View>
+              {showNowLine && (
+                <View style={[styles.nowLine, { top: nowTop }]}>
+                  <View style={styles.nowDot} />
+                </View>
+              )}
+
+              <View style={styles.eventsLayer}>
+                {timedEvents.map((evt) => {
+                  const pos = getEventPosition(evt, hourHeight);
+                  const unit = 100 / evt.laneCount;
+                  return (
+                    <CourseBlock
+                      key={`${evt.personId}-${evt.id}`}
+                      event={{ ...evt, top: pos.top }}
+                      height={pos.height}
+                      left={`${evt.lane * unit}%`}
+                      width={`${unit * evt.laneSpan}%`}
+                      compact={evt.laneCount > 2}
+                      onPress={setSelectedEvent}
+                    />
+                  );
+                })}
+              </View>
+
+              {dayEvents.length === 0 && (
+                <View style={styles.emptyWrap} pointerEvents="none">
+                  <Ionicons name="calendar-clear-outline" size={30} color={palette.textMuted} />
+                  <Text style={styles.emptyText}>Aucun cours ce jour-là</Text>
+                </View>
+              )}
+            </>
           )}
-
-          <View style={styles.timeline}>
-            {/* Graduation horaire 8h → 23h */}
-            {Array.from({ length: TOTAL_HOURS + 1 }, (_, i) => (
-              <View key={i} style={[styles.hourRow, { top: i * HOUR_HEIGHT }]}>
-                <Text style={styles.hourLabel}>{String(START_HOUR + i).padStart(2, '0')}:00</Text>
-                <View style={styles.hourLine} />
-              </View>
-            ))}
-
-            {showNowLine && (
-              <View style={[styles.nowLine, { top: nowTop }]}>
-                <View style={styles.nowDot} />
-              </View>
-            )}
-
-            {/* Créneaux : les cours simultanés se partagent la largeur */}
-            <View style={styles.eventsLayer}>
-              {timedEvents.map((evt) => {
-                const pos = getEventPosition(evt);
-                const unit = 100 / evt.laneCount;
-                return (
-                  <CourseBlock
-                    key={`${evt.personId}-${evt.id}`}
-                    event={{ ...evt, top: pos.top }}
-                    height={pos.height}
-                    left={`${evt.lane * unit}%`}
-                    width={`${unit * evt.laneSpan}%`}
-                    compact={evt.laneCount > 2}
-                    onPress={setSelectedEvent}
-                  />
-                );
-              })}
-            </View>
-
-            {dayEvents.length === 0 && (
-              <View style={styles.emptyWrap} pointerEvents="none">
-                <Ionicons name="calendar-clear-outline" size={36} color={palette.textMuted} />
-                <Text style={styles.emptyText}>Aucun cours ce jour-là</Text>
-              </View>
-            )}
-          </View>
-        </GlassCard>
-      </ScrollView>
+        </View>
+      </GlassCard>
 
       <CourseDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
     </View>
   );
 }
 
-const createStyles = (p) => StyleSheet.create({
-  container: { flex: 1 },
-  stickyTop: { paddingHorizontal: 16, paddingTop: 8, gap: 10, zIndex: 10 },
-  navCard: { padding: 14 },
-  navRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  navBtn: { padding: 8, borderRadius: RADIUS.full },
-  dateInfo: { alignItems: 'center', flex: 1 },
-  dateTitle: { fontSize: 15, fontWeight: '800', color: p.text, textAlign: 'center' },
-  todayBadge: { fontSize: 10, fontWeight: '800', textTransform: 'uppercase', marginTop: 2 },
-  todayBtn: {
-    alignSelf: 'center',
-    marginTop: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: RADIUS.md,
-  },
-  todayBtnText: { fontSize: 11, fontWeight: '700' },
-  filter: { marginBottom: 2 },
+const createStyles = (p) =>
+  StyleSheet.create({
+    container: { flex: 1, paddingHorizontal: 12, paddingBottom: 10, gap: 8 },
 
-  scrollArea: { flex: 1 },
-  scrollContent: { paddingHorizontal: 16, paddingTop: 10, paddingBottom: 40 },
-  banner: { marginBottom: 12 },
+    navCard: { paddingVertical: 8, paddingHorizontal: 10 },
+    navRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    navBtn: { padding: 6, borderRadius: RADIUS.full },
+    dateInfo: { alignItems: 'center', flex: 1 },
+    dateTitle: { fontSize: 14, fontWeight: '800', color: p.text },
+    dateHint: { fontSize: 9, fontWeight: '800', textTransform: 'uppercase', marginTop: 1 },
 
-  sectionCard: { padding: 14, marginBottom: 12 },
-  sectionTitle: { fontSize: 14, fontWeight: '800', color: p.text },
-  allDayList: { gap: 8, marginTop: 10 },
-  allDayItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    padding: 10,
-    borderRadius: RADIUS.sm,
-    backgroundColor: p.cardSoft,
-    borderLeftWidth: 4,
-  },
-  personDot: { width: 8, height: 8, borderRadius: RADIUS.full },
-  allDayText: { flex: 1, fontSize: 13, fontWeight: '600', color: p.text },
+    filter: { flexGrow: 0 },
+    banner: { flexGrow: 0 },
 
-  timelineCard: { padding: 14 },
-  laneHeader: { flexDirection: 'row', marginLeft: 48, marginTop: 10, gap: 3 },
-  laneHeaderCell: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4 },
-  laneDot: { width: 7, height: 7, borderRadius: 999 },
-  laneName: { fontSize: 11, fontWeight: '800' },
-  timeline: { height: GRID_HEIGHT + 12, marginTop: 12, position: 'relative' },
-  hourRow: { position: 'absolute', left: 0, right: 0, flexDirection: 'row', alignItems: 'flex-start' },
-  hourLabel: { width: 44, fontSize: 11, color: p.textMuted, fontWeight: '600', marginTop: -6 },
-  hourLine: { flex: 1, height: 1, backgroundColor: p.hairline },
-  nowLine: { position: 'absolute', left: GUTTER, right: 0, height: 2, backgroundColor: p.now, zIndex: 5 },
-  nowDot: {
-    position: 'absolute',
-    left: -4,
-    top: -3,
-    width: 8,
-    height: 8,
-    borderRadius: RADIUS.full,
-    backgroundColor: p.now,
-  },
-  eventsLayer: { position: 'absolute', left: GUTTER, right: 0, top: 0, height: GRID_HEIGHT },
-  emptyWrap: { position: 'absolute', top: 90, left: 0, right: 0, alignItems: 'center' },
-  emptyText: { marginTop: 6, fontSize: 12, color: p.textMuted, fontWeight: '600' },
-});
+    allDayRow: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
+    allDayChip: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.sm },
+    allDayText: { fontSize: 11, fontWeight: '700', color: '#fff' },
+
+    // La carte de la timeline occupe toute la hauteur restante : c'est elle
+    // qui donne sa mesure à la grille.
+    timelineCard: { flex: 1, paddingHorizontal: 10, paddingTop: 6, paddingBottom: 10 },
+    laneHeader: { flexDirection: 'row', marginLeft: GUTTER, marginBottom: 2, gap: 3 },
+    laneHeaderCell: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 3 },
+    laneDot: { width: 6, height: 6, borderRadius: RADIUS.full },
+    laneName: { fontSize: 10, fontWeight: '800' },
+
+    timeline: { flex: 1, position: 'relative' },
+    hourRow: { position: 'absolute', left: 0, right: 0, flexDirection: 'row', alignItems: 'flex-start' },
+    hourLabel: { width: GUTTER - 6, fontSize: 10, color: p.textMuted, fontWeight: '600', marginTop: -5 },
+    hourLine: { flex: 1, height: 1, backgroundColor: p.hairline },
+    nowLine: { position: 'absolute', left: GUTTER, right: 0, height: 2, backgroundColor: p.now, zIndex: 5 },
+    nowDot: {
+      position: 'absolute',
+      left: -4,
+      top: -3,
+      width: 8,
+      height: 8,
+      borderRadius: RADIUS.full,
+      backgroundColor: p.now,
+    },
+    eventsLayer: { position: 'absolute', left: GUTTER, right: 0, top: 0, bottom: 0 },
+    emptyWrap: { position: 'absolute', top: '35%', left: 0, right: 0, alignItems: 'center' },
+    emptyText: { marginTop: 4, fontSize: 12, color: p.textMuted, fontWeight: '600' },
+  });

@@ -11,13 +11,13 @@ import { RADIUS } from '../theme';
  * couleur rappelle à qui appartient un créneau (les blocs de cours, eux, sont
  * colorés par matière).
  */
-export default function PeopleFilter({ style }) {
+export default function PeopleFilter({ style, compact = false }) {
   const { people, visiblePeople, togglePerson, showOnly, showAll, palette } = useAppTheme();
   const styles = useMemo(() => createStyles(palette), [palette]);
   const visibleCount = people.filter((p) => visiblePeople[p.id]).length;
 
   return (
-    <GlassCard style={[styles.card, style]}>
+    <GlassCard style={[styles.card, compact && styles.cardCompact, style]}>
       <View style={styles.row}>
         {people.map((p) => {
           const on = !!visiblePeople[p.id];
@@ -27,10 +27,17 @@ export default function PeopleFilter({ style }) {
               onPress={() => togglePerson(p.id)}
               onLongPress={() => showOnly(p.id)}
               delayLongPress={300}
-              style={[styles.chip, on && { backgroundColor: `${p.accent}26`, borderColor: p.accent }]}
+              style={[
+                styles.chip,
+                compact && styles.chipCompact,
+                on && { backgroundColor: `${p.accent}26`, borderColor: p.accent },
+              ]}
             >
               <View style={[styles.dot, { backgroundColor: on ? p.accent : palette.textMuted }]} />
-              <Text style={[styles.chipText, on && { color: p.accent }]} numberOfLines={1}>
+              <Text
+                style={[styles.chipText, compact && styles.chipTextCompact, on && { color: p.accent }]}
+                numberOfLines={1}
+              >
                 {p.name}
               </Text>
               <Ionicons
@@ -43,7 +50,7 @@ export default function PeopleFilter({ style }) {
         })}
       </View>
 
-      {visibleCount < people.length && (
+      {visibleCount < people.length && !compact && (
         <TouchableOpacity onPress={showAll} style={styles.resetBtn}>
           <Text style={styles.resetText}>Tout afficher</Text>
         </TouchableOpacity>
@@ -55,6 +62,7 @@ export default function PeopleFilter({ style }) {
 const createStyles = (p) =>
   StyleSheet.create({
     card: { padding: 10 },
+    cardCompact: { paddingVertical: 6, paddingHorizontal: 8 },
     row: { flexDirection: 'row', gap: 8, justifyContent: 'center', flexWrap: 'wrap' },
     chip: {
       flexDirection: 'row',
@@ -67,8 +75,10 @@ const createStyles = (p) =>
       borderColor: p.cardBorder,
       backgroundColor: p.cardSoft,
     },
+    chipCompact: { paddingHorizontal: 9, paddingVertical: 4, gap: 4 },
     dot: { width: 8, height: 8, borderRadius: RADIUS.full },
     chipText: { fontSize: 13, fontWeight: '700', color: p.textMuted },
+    chipTextCompact: { fontSize: 12 },
     resetBtn: { alignSelf: 'center', marginTop: 8 },
     resetText: { fontSize: 11, fontWeight: '700', color: p.textMuted },
   });

@@ -27,12 +27,18 @@ export default function Header({ isDesktop }) {
     <View style={[styles.wrap, isDesktop && styles.wrapDesktop]}>
       <View style={styles.titleRow}>
         <View style={styles.titleBlock}>
-          <Text style={styles.title}>Emplois du temps</Text>
-          <Text style={styles.subtitle}>
-            {profileId
-              ? `Profil : ${people.find((p) => p.id === profileId)?.name}`
-              : 'Claire · Alban · Clara'}
+          <Text style={[styles.title, !isDesktop && styles.titleMobile]} numberOfLines={1}>
+            Emplois du temps
           </Text>
+          {/* Sur mobile, le sous-titre ferait doublon avec les interrupteurs
+              juste en dessous : chaque ligne gagnée va à la timeline. */}
+          {isDesktop && (
+            <Text style={styles.subtitle}>
+              {profileId
+                ? `Profil : ${people.find((p) => p.id === profileId)?.name}`
+                : 'Claire · Alban · Clara'}
+            </Text>
+          )}
         </View>
 
         <View style={styles.controls}>
@@ -70,8 +76,8 @@ export default function Header({ isDesktop }) {
         </View>
       </View>
 
-      <View style={styles.profileRow}>
-        <Ionicons name="person-circle-outline" size={16} color={palette.textMuted} />
+      <View style={[styles.profileRow, !isDesktop && styles.profileRowMobile]}>
+        <Ionicons name="person-circle-outline" size={14} color={palette.textMuted} />
         <Text style={styles.profileLabel}>Je suis</Text>
         {people.map((p) => {
           const active = profileId === p.id;
@@ -79,7 +85,11 @@ export default function Header({ isDesktop }) {
             <TouchableOpacity
               key={p.id}
               onPress={() => chooseProfile(p.id)}
-              style={[styles.profileChip, active && { backgroundColor: theme.tint, borderColor: theme.primary }]}
+              style={[
+                styles.profileChip,
+                !isDesktop && styles.profileChipMobile,
+                active && { backgroundColor: theme.tint, borderColor: theme.primary },
+              ]}
             >
               <Text style={[styles.profileChipText, active && { color: theme.primary }]}>{p.name}</Text>
             </TouchableOpacity>
@@ -92,11 +102,12 @@ export default function Header({ isDesktop }) {
 
 const createStyles = (p) =>
   StyleSheet.create({
-    wrap: { paddingHorizontal: 16, paddingTop: 14, paddingBottom: 4 },
+    wrap: { paddingHorizontal: 12, paddingTop: 6, paddingBottom: 2 },
     wrapDesktop: { paddingHorizontal: 24, paddingTop: 18 },
     titleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
     titleBlock: { flexShrink: 1 },
     title: { fontSize: 22, fontWeight: '800', color: p.text, letterSpacing: -0.4 },
+    titleMobile: { fontSize: 18 },
     subtitle: { fontSize: 12, fontWeight: '600', color: p.textMuted, marginTop: 2 },
 
     controls: { flexDirection: 'row', alignItems: 'center', gap: 12, flexShrink: 0 },
@@ -104,8 +115,8 @@ const createStyles = (p) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: 5,
-      paddingHorizontal: 10,
-      paddingVertical: 6,
+      paddingHorizontal: 8,
+      paddingVertical: 5,
       borderRadius: RADIUS.full,
       borderWidth: 1,
       borderColor: p.cardBorder,
@@ -115,8 +126,8 @@ const createStyles = (p) =>
 
     themeRow: { flexDirection: 'row', gap: 8, alignItems: 'center' },
     themeDot: {
-      width: 18,
-      height: 18,
+      width: 16,
+      height: 16,
       borderRadius: RADIUS.full,
       borderWidth: 2,
       borderColor: 'transparent',
@@ -125,10 +136,15 @@ const createStyles = (p) =>
     themeDotActive: { opacity: 1, borderColor: p.cardBorder },
 
     profileRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10, flexWrap: 'wrap' },
+    profileRowMobile: { marginTop: 5 },
     profileLabel: { fontSize: 12, fontWeight: '700', color: p.textMuted, marginRight: 2 },
     profileChip: {
       paddingHorizontal: 10,
       paddingVertical: 4,
+    },
+    profileChipMobile: {
+      paddingHorizontal: 8,
+      paddingVertical: 2,
       borderRadius: RADIUS.full,
       borderWidth: 1,
       borderColor: p.cardBorder,
