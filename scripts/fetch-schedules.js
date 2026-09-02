@@ -275,6 +275,13 @@ async function fetchSchedule(personId, url) {
 
   fs.writeFileSync(path.join(OUT_DIR, `${personId}.json`), `${JSON.stringify(events, null, 2)}\n`);
   console.log(`✅  Emploi du temps de ${personId} mis à jour (${events.length} créneaux).`);
+
+  // Aperçu du format des intitulés : c'est de lui que l'app déduit le code
+  // d'UE (donc la couleur du cours). Le voir dans les logs de build évite de
+  // deviner comment l'université nomme les créneaux.
+  const titles = [...new Set(events.map((e) => e.title))];
+  console.log(`   ↳ ${titles.length} intitulés distincts, par exemple :`);
+  titles.slice(0, 5).forEach((t) => console.log(`      · ${t}`));
 }
 
 async function main() {

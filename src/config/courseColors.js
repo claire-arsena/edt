@@ -75,27 +75,48 @@ function buildPalette(personId, count, isDark) {
   });
 }
 
-// Extrait le code d'UE en tête du titre ("R1.01" dans "-R1.01-05-TDA (MECA)",
-// "R5.A.L1" dans "R5.A.L1 Compléments IA TD GA1"). Les intitulés ADE
-// commencent parfois par un tiret, et le code s'arrête au premier séparateur
-// qui n'en fait pas partie : "-R1.01-05-TDA" et "-R1.01-06-TDB" partagent donc
-// la clé "R1.01", donc la couleur de l'UE.
-export function getCourseKey(title) {
-  if (!title) return '';
-  const cleaned = title.replace(/^[^A-Za-z0-9]+/, '');
-  const match = cleaned.match(/^[A-Z0-9]+(?:[.&][A-Z0-9]+)*/);
-  return (match ? match[0] : cleaned).trim();
+// Repère le code d'UE dans le titre. Il n'est pas toujours en tête : certains
+// intitulés ADE sont préfixés du groupe ("1A-R1.05-05a-CM-CMA (OUTILS_INFO)"),
+// d'autres commencent directement par le code ("S5.A&B.01 Autonomie IUT GA1").
+// On découpe donc le titre et on retient le premier morceau qui a la forme
+// d'un code de module : lettres + chiffres + au moins un point ("R1.05",
+// "R1.03A", "S5.A&B.01", "R5.A.L1", "L3.DROIT.11").
+const CODE_WITH_DOT = /^[A-Za-z]{1,4}\d+(?:[.&][A-Za-z0-9]+)+$/;
+const CODE_PLAIN = /^[A-Za-z]{1,4}\d+[A-Za-z]?$/;
+const TOKEN_SEPARATORS = /[\s\-–—_()[\]/,;:]+/;
+
+function findCourseCode(title) {
+  const tokens = title.split(TOKEN_SEPARATORS).filter(Boolean);
+  const dotted = tokens.find((t) => CODE_WITH_DOT.test(t));
+  if (dotted) return dotted;
+  // Code sans point : seulement s'il ouvre le titre, pour ne pas confondre
+  // avec un libellé de groupe en fin d'intitulé ("… TD GA1").
+  if (tokens[0] && CODE_PLAIN.test(tokens[0])) return tokens[0];
+  return null;
 }
 
-// Codes d'UE d'une personne, triés : l'ordre ne dépend pas de l'ordre des
-// créneaux, donc la couleur d'une UE ne change pas d'un affichage à l'autre.
+export function getCourseKey(title) {
+  if (!title) return '';
+  const code = findCourseCode(title);
+  // Sans code identifiable (réunions, suivis…), le titre lui-même fait office
+  // de clé : ces créneaux gardent chacun leur couleur.
+  return code || title.replace(/^[^A-Za-z0-9]+/, '').trim();
+}
+
 const courseKeysCache = {};
 
 function getCourseKeys(personId) {
   if (!courseKeysCache[personId]) {
-    courseKeysCache[personId] = [
-      ...new Set((SCHEDULES_BY_PERSON[personId] || []).map((e) => getCourseKey(e.title)).filter(Boolean)),
-    ].sort();
+    const events = SCHEDULES_BY_PERSON[personId] || [];
+    const keys = [...new Set(events.map((e) => getCourseKey(e.title)).filter(Boolean))].sort();
+    const titles = new Set(events.map((e) => e.title));
+
+    // Garde-fou : si un format d'intitulé inattendu faisait retomber tout un
+    // emploi du temps sur une ou deux clés, tous les cours prendraient la même
+    // couleur. Dans ce cas on repasse à une couleur par intitulé — moins
+    // regroupé, mais jamais monochrome.
+    courseKeysCache[personId] =
+      keys.length <= 2 && titles.size >= 8 ? [...titles].sort() : keys;
   }
   return courseKeysCache[personId];
 }
@@ -143,15 +164,13 @@ export function getTextOnCourse(color) {
     : { strong: '#ffffff', soft: 'rgba(255,255,255,0.88)', dot: 'rgba(255,255,255,0.9)' };
 }
 
-// Titre débarrassé du code d'UE (déjà porté par la couleur du bloc), pour
-// laisser la place au libellé utile dans les colonnes étroites.
+// Le titre est affiché à partir du code d'UE : le préfixe de groupe qui le
+// précède parfois n'apporte rien dans un bloc étroit, alors que le code, lui,
+// identifie l'UE — et se retrouve dans la couleur.
 export function getDisplayTitle(title) {
   if (!title) return '';
-  const cleaned = title.replace(/^[^A-Za-z0-9]+/, '');
-  const key = getCourseKey(title);
-  if (key && cleaned.startsWith(key)) {
-    const rest = cleaned.slice(key.length).replace(/^[\s\-–—:.]+/, '').trim();
-    return rest || cleaned;
-  }
-  return cleaned;
+  const code = findCourseCode(title);
+  if (!code) return title;
+  const at = title.indexOf(code);
+  return at > 0 ? title.slice(at) : title;
 }
