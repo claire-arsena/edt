@@ -26,9 +26,9 @@ const SCHEDULE_SOURCES = {
   claire:
     process.env.EDT_CLAIRE_ICS ||
     'https://agenda-web-consult.univ-amu.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?projectId=8&resources=42526&calType=ical&firstDate=2026-08-17&lastDate=2027-08-15',
-  // Renseigner l'identifiant "resources" du groupe d'Alban, ou définir
-  // EDT_ALBAN_ICS côté Render.
-  alban: process.env.EDT_ALBAN_ICS || '',
+  alban:
+    process.env.EDT_ALBAN_ICS ||
+    'https://agenda-web-consult.univ-amu.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?projectId=8&resources=16173&calType=ical&firstDate=2026-08-17&lastDate=2027-08-15',
   // Idem pour Clara (EDT_CLARA_ICS).
   clara: process.env.EDT_CLARA_ICS || '',
 };
