@@ -24,16 +24,19 @@ l'app affiche directement la semaine, sans écran d'accueil intermédiaire.
 - **Interrupteurs par personne** : afficher / masquer Claire, Alban ou Clara pour
   superposer ou isoler les emplois du temps (appui long sur un nom = n'afficher
   que cette personne). Le choix est mémorisé sur l'appareil.
-- **Une couleur par cours, une palette par personne** : chaque personne a sa
-  famille de couleurs — Claire en pastel, Alban en couleurs d'hiver, Clara en
-  couleurs d'été — et à l'intérieur de cette famille, chaque code de cours
-  (`R1.08`, `R5.A.L1`, `S5.A&B.01`…) reçoit sa propre couleur. Toutes les séances
-  d'un même module (CM, TD, TP) sont donc du même ton, identique en vue jour et
-  en vue semaine. Les couleurs sont attribuées à partir des cours réellement
-  présents dans le flux, pas par un simple hash : deux cours différents ne
-  tombent pas sur la même couleur tant qu'une personne en a au plus dix. Le texte
-  du bloc passe automatiquement en sombre sur les fonds clairs (pastels, jaunes)
-  pour rester lisible.
+- **Une couleur par UE, une gamme de tons par personne** : les couleurs ne
+  viennent pas d'une liste figée. Pour chaque personne, les codes d'UE
+  réellement présents dans son flux (`R1.01`, `R1.07`, `R5.A.L1`, `S5.A&B.01`…)
+  sont relevés, et autant de teintes que nécessaire sont réparties sur le cercle
+  chromatique : deux UE différentes ne peuvent donc jamais recevoir la même
+  couleur, quel que soit leur nombre. Toutes les séances d'une même UE (CM, TD,
+  TP) gardent la même couleur, identique en vue jour et en vue semaine.
+  Ce qui distingue les trois emplois du temps, c'est le **ton** : Claire en
+  clair et doux (pastel), Alban en sombre et froid (hiver), Clara en vif et
+  saturé (été). Écart perceptuel mesuré (ΔE CIE76) entre deux UE d'une même
+  personne : 17 à 33 selon le nombre d'UE — largement au-dessus du seuil de
+  confusion. Le texte du bloc passe automatiquement en sombre sur les fonds
+  clairs pour rester lisible.
 - **Une colonne par personne** : chaque emploi du temps garde sa colonne à
   l'intérieur d'une journée, même quand les autres n'ont pas cours — les blocs ne
   se déplacent pas d'un jour à l'autre. Si une personne a deux cours simultanés,
