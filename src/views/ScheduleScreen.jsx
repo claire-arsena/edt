@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { AppState, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppTheme } from '../ctx/AppContext';
 import { DESKTOP_BREAKPOINT, DAYS_FR, MONTHS_FR, MONTHS_SHORT_FR } from '../config/constants';
@@ -16,6 +16,19 @@ import { addDays, formatLocalDate, getMonday } from '../utils/planningTime';
 const capitalizeFirst = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
 /**
+ * Jour sur lequel ouvrir l'app : celui du jour s'il est ouvré, sinon le lundi
+ * qui suit. Un samedi, la semaine écoulée n'a plus d'intérêt et la journée
+ * elle-même est vide ; c'est la rentrée du lundi qu'on vient consulter.
+ */
+function openingDay(now = new Date()) {
+  const d = new Date(now);
+  const weekday = d.getDay(); // 0 = dimanche, 6 = samedi
+  if (weekday === 6) d.setDate(d.getDate() + 2);
+  else if (weekday === 0) d.setDate(d.getDate() + 1);
+  return d;
+}
+
+/**
  * Écran unique de l'app. Il détient la date consultée et la vue active
  * (jour ou semaine), pour que la barre de navigation, le calendrier et les
  * deux vues restent d'accord : changer de vue conserve la date, choisir une
@@ -30,9 +43,25 @@ export default function ScheduleScreen() {
   const { isLoaded, viewMode, chooseView } = useAppTheme();
   const isDesktop = width >= DESKTOP_BREAKPOINT;
 
-  const [date, setDate] = useState(() => new Date());
+  const [date, setDate] = useState(openingDay);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  // Une app web rouverte le lendemain reprend l'état laissé la veille : au
+  // retour au premier plan, si la date a changé, on se replace sur le jour du
+  // jour plutôt que de rester sur celui de la dernière consultation.
+  const lastActiveRef = useRef(new Date());
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state !== 'active') return;
+      const now = new Date();
+      if (formatLocalDate(lastActiveRef.current) !== formatLocalDate(now)) {
+        setDate(openingDay(now));
+      }
+      lastActiveRef.current = now;
+    });
+    return () => subscription.remove();
+  }, []);
 
   const activeView = viewMode || (isDesktop ? 'week' : 'day');
   const isWeek = activeView === 'week';

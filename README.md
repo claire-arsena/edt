@@ -21,11 +21,18 @@ donc rafraîchis à chaque déploiement.
 La vue est choisie à partir de la largeur de la fenêtre : ouverte depuis un PC,
 l'app affiche directement la semaine, sans écran d'accueil intermédiaire.
 
+L'app s'ouvre sur le jour même — ou sur le lundi qui suit si on la lance un
+week-end, la semaine écoulée n'ayant plus d'intérêt. Laissée ouverte d'un jour
+à l'autre, elle se replace sur la nouvelle date dès qu'elle revient au premier
+plan, plutôt que de rester sur celle de la veille.
+
 Le sélecteur Jour / Semaine de la barre de navigation est disponible sur les
 deux formats et le choix est mémorisé. Sur mobile, la semaine ne se découpe pas
-en cinq colonnes de soixante pixels — chaque journée occupe une page entière du
-carrousel, que l'on fait glisser ou que l'on parcourt avec les deux boutons
-ronds encadrant la date.
+en cinq colonnes de soixante pixels — chaque journée occupe la largeur de l'écran et
+l'on fait glisser d'un jour à l'autre. Le défilement est libre — il ne
+s'accroche pas à un jour, on peut donc s'arrêter à cheval sur deux journées
+pour comparer une fin d'après-midi et le matin suivant — et deux boutons ronds
+fixes amènent au jour précédent ou suivant.
 
 La présentation mobile suit celle de l'emploi du temps de référence
 (jbedt.omegagroup.fr) : titre du jour en gros au-dessus de la grille, graduation

@@ -9,11 +9,16 @@ import DayTimeline from '../components/DayTimeline';
 import { RADIUS } from '../theme';
 import { addDays, formatLocalDate, getMonday } from '../utils/planningTime';
 
+const NAV_SIZE = 34;
+
 /**
- * Vue semaine sur mobile : les cinq jours en carrousel horizontal, un jour par
- * page. Chaque journée garde ainsi toute la largeur de l'écran — des colonnes
- * de soixante pixels rendraient les créneaux illisibles — et l'on passe d'un
- * jour à l'autre en faisant glisser.
+ * Vue semaine sur mobile : les cinq jours côte à côte, chacun sur la largeur
+ * de l'écran, parcourus en faisant glisser.
+ *
+ * Le défilement est libre : il ne s'accroche pas à un jour, on peut donc
+ * s'arrêter à cheval sur deux journées pour comparer une fin d'après-midi et
+ * le matin suivant. Le titre de chaque jour défile avec sa colonne ; les deux
+ * boutons ronds, eux, restent fixes et amènent au jour précédent ou suivant.
  */
 export default function WeekPager({ date, onSelectEvent }) {
   const { palette, theme, visiblePeople } = useAppTheme();
@@ -42,70 +47,16 @@ export default function WeekPager({ date, onSelectEvent }) {
     }
   }, [targetIndex, page.width]);
 
-  const todayStr = formatLocalDate(new Date());
-  const activeDay = weekDays[Math.min(activeIndex, weekDays.length - 1)] || weekDays[0];
-  const activeMatches = useMemo(
-    () => getDayMatches(formatLocalDate(activeDay), visiblePeople),
-    [activeDay, visiblePeople]
-  );
-
   const goToIndex = (index) => {
     const next = Math.max(0, Math.min(weekDays.length - 1, index));
     setActiveIndex(next);
     scrollRef.current?.scrollTo({ x: next * page.width, animated: true });
   };
 
+  const todayStr = formatLocalDate(new Date());
+
   return (
     <GlassCard style={styles.card}>
-      {/* En-tête du jour affiché : deux boutons ronds encadrant la date,
-          comme sur la référence. Le glissement reste possible. */}
-      <View style={styles.dayNav}>
-        <TouchableOpacity
-          style={styles.navCircle}
-          onPress={() => goToIndex(activeIndex - 1)}
-          disabled={activeIndex === 0}
-          accessibilityLabel="Jour précédent"
-        >
-          <Ionicons
-            name="chevron-back"
-            size={20}
-            color={activeIndex === 0 ? palette.textMuted : palette.text}
-          />
-        </TouchableOpacity>
-
-        <View style={styles.dayTitleBlock}>
-          <Text style={styles.dayTitle} numberOfLines={1}>
-            {WEEKDAYS_FR[activeDay.getDay() - 1]} {String(activeDay.getDate()).padStart(2, '0')}/
-            {String(activeDay.getMonth() + 1).padStart(2, '0')}
-          </Text>
-          <View style={styles.dayMarks}>
-            {formatLocalDate(activeDay) === todayStr && (
-              <Text style={[styles.todayMark, { color: theme.primary }]}>AUJOURD'HUI</Text>
-            )}
-            {activeMatches.length > 0 && (
-              <Ionicons
-                name={activeMatches.some((m) => m.carpool) ? 'car-sport' : 'sparkles'}
-                size={11}
-                color={palette.match}
-              />
-            )}
-          </View>
-        </View>
-
-        <TouchableOpacity
-          style={styles.navCircle}
-          onPress={() => goToIndex(activeIndex + 1)}
-          disabled={activeIndex === weekDays.length - 1}
-          accessibilityLabel="Jour suivant"
-        >
-          <Ionicons
-            name="chevron-forward"
-            size={20}
-            color={activeIndex === weekDays.length - 1 ? palette.textMuted : palette.text}
-          />
-        </TouchableOpacity>
-      </View>
-
       <View
         style={styles.pagerWrap}
         onLayout={(e) =>
@@ -116,7 +67,6 @@ export default function WeekPager({ date, onSelectEvent }) {
           <ScrollView
             ref={scrollRef}
             horizontal
-            pagingEnabled
             showsHorizontalScrollIndicator={false}
             scrollEventThrottle={16}
             onScroll={(e) => {
@@ -124,18 +74,70 @@ export default function WeekPager({ date, onSelectEvent }) {
               if (index !== activeIndex) setActiveIndex(index);
             }}
           >
-            {/* Chaque page est dimensionnée explicitement : dans un carrousel
-                horizontal, un enfant en flex:1 n'hériterait d'aucune hauteur. */}
-            {weekDays.map((day) => (
-              <View key={formatLocalDate(day)} style={{ width: page.width, height: page.height }}>
-                <DayTimeline date={day} onSelectEvent={onSelectEvent} />
-              </View>
-            ))}
+            {weekDays.map((day) => {
+              const dateStr = formatLocalDate(day);
+              const matches = getDayMatches(dateStr, visiblePeople);
+              const isToday = dateStr === todayStr;
+
+              return (
+                // Chaque page est dimensionnée explicitement : dans un
+                // carrousel horizontal, un enfant en flex:1 n'hériterait
+                // d'aucune hauteur.
+                <View key={dateStr} style={{ width: page.width, height: page.height }}>
+                  <View style={styles.dayTitleBlock}>
+                    <Text style={[styles.dayTitle, isToday && { color: theme.primary }]} numberOfLines={1}>
+                      {WEEKDAYS_FR[day.getDay() - 1]} {String(day.getDate()).padStart(2, '0')}/
+                      {String(day.getMonth() + 1).padStart(2, '0')}
+                    </Text>
+                    <View style={styles.dayMarks}>
+                      {isToday && (
+                        <Text style={[styles.todayMark, { color: theme.primary }]}>AUJOURD'HUI</Text>
+                      )}
+                      {matches.length > 0 && (
+                        <Ionicons
+                          name={matches.some((m) => m.carpool) ? 'car-sport' : 'sparkles'}
+                          size={11}
+                          color={palette.match}
+                        />
+                      )}
+                    </View>
+                  </View>
+
+                  <View style={styles.timelineWrap}>
+                    <DayTimeline date={day} onSelectEvent={onSelectEvent} />
+                  </View>
+                </View>
+              );
+            })}
           </ScrollView>
         )}
-      </View>
 
-      <Text style={styles.hint}>Faites glisser pour changer de jour</Text>
+        {/* Boutons fixes, superposés au titre qui défile dessous. */}
+        <TouchableOpacity
+          style={[styles.navCircle, styles.navLeft]}
+          onPress={() => goToIndex(activeIndex - 1)}
+          disabled={activeIndex <= 0}
+          accessibilityLabel="Jour précédent"
+        >
+          <Ionicons
+            name="chevron-back"
+            size={20}
+            color={activeIndex <= 0 ? palette.textMuted : palette.text}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.navCircle, styles.navRight]}
+          onPress={() => goToIndex(activeIndex + 1)}
+          disabled={activeIndex >= weekDays.length - 1}
+          accessibilityLabel="Jour suivant"
+        >
+          <Ionicons
+            name="chevron-forward"
+            size={20}
+            color={activeIndex >= weekDays.length - 1 ? palette.textMuted : palette.text}
+          />
+        </TouchableOpacity>
+      </View>
     </GlassCard>
   );
 }
@@ -143,21 +145,29 @@ export default function WeekPager({ date, onSelectEvent }) {
 const createStyles = (p) =>
   StyleSheet.create({
     card: { flex: 1, paddingHorizontal: 8, paddingTop: 6, paddingBottom: 6 },
-    dayNav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
+    pagerWrap: { flex: 1, overflow: 'hidden', position: 'relative' },
+
+    // Le titre laisse libres les deux extrémités, où se posent les boutons.
+    dayTitleBlock: { alignItems: 'center', paddingHorizontal: NAV_SIZE + 6, marginBottom: 2 },
+    dayTitle: { fontSize: 17, fontWeight: '800', color: p.text, userSelect: 'none' },
+    dayMarks: { flexDirection: 'row', alignItems: 'center', gap: 5, height: 12 },
+    todayMark: { fontSize: 9, fontWeight: '800' },
+
+    timelineWrap: { flex: 1 },
+
     navCircle: {
-      width: 34,
-      height: 34,
+      position: 'absolute',
+      top: 0,
+      width: NAV_SIZE,
+      height: NAV_SIZE,
       borderRadius: RADIUS.full,
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 1.5,
       borderColor: p.cardBorder,
+      backgroundColor: p.card,
+      zIndex: 3,
     },
-    dayTitleBlock: { flex: 1, alignItems: 'center' },
-    dayTitle: { fontSize: 17, fontWeight: '800', color: p.text, userSelect: 'none' },
-    dayMarks: { flexDirection: 'row', alignItems: 'center', gap: 5, height: 12 },
-    todayMark: { fontSize: 9, fontWeight: '800' },
-
-    pagerWrap: { flex: 1, overflow: 'hidden' },
-    hint: { fontSize: 9, color: p.textMuted, textAlign: 'center', marginTop: 2 },
+    navLeft: { left: 0 },
+    navRight: { right: 0 },
   });
