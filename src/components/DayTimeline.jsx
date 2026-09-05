@@ -31,7 +31,43 @@ export const densityForWidth = (w) =>
  * Utilisée telle quelle par la vue jour, et par la vue semaine mobile qui en
  * empile une par jour dans un carrousel horizontal.
  */
-export default function DayTimeline({ date, onSelectEvent, showLaneHeader = true, isDesktop = false }) {
+/**
+ * Colonne des heures, utilisable seule : la vue semaine mobile la fixe à
+ * gauche du carrousel, pour ne pas la réécrire à chaque jour.
+ */
+export function HourScale({ hourHeight, isDesktop = false, style }) {
+  const { palette } = useAppTheme();
+  const styles = useMemo(() => createStyles(palette), [palette]);
+  const showHalfHours = !isDesktop && hourHeight >= 34;
+
+  return (
+    <View style={[styles.scale, style]}>
+      {hourHeight > 0 &&
+        Array.from({ length: TOTAL_HOURS * 2 + 1 }, (_, i) => {
+          const isHalf = i % 2 === 1;
+          if (isHalf && !showHalfHours) return null;
+          return (
+            <Text
+              key={i}
+              style={[styles.scaleLabel, isHalf && styles.halfLabel, { top: (i * hourHeight) / 2 - 5 }]}
+            >
+              {String(START_HOUR + Math.floor(i / 2)).padStart(2, '0')}
+              {isDesktop ? 'h' : isHalf ? 'h30' : 'h00'}
+            </Text>
+          );
+        })}
+    </View>
+  );
+}
+
+export default function DayTimeline({
+  date,
+  onSelectEvent,
+  showLaneHeader = true,
+  isDesktop = false,
+  hourHeight: fixedHourHeight = 0,
+  showGutter = true,
+}) {
   const { visiblePeople, palette, people } = useAppTheme();
   const [grid, setGrid] = useState({ height: 0, width: 0 });
   const styles = useMemo(() => createStyles(palette), [palette]);
@@ -51,8 +87,12 @@ export default function DayTimeline({ date, onSelectEvent, showLaneHeader = true
   );
   const timedEvents = useMemo(() => layoutByPerson(dayEvents, visibleIds), [dayEvents, visibleIds]);
 
-  const hourHeight = grid.height > 0 ? Math.max(MIN_HOUR_HEIGHT, grid.height / TOTAL_HOURS) : 0;
-  const layerWidth = Math.max(0, grid.width - GUTTER);
+  // La hauteur d'heure vient soit de la mesure locale, soit de la colonne
+  // d'heures fixe qui la partage entre toutes les journées du carrousel.
+  const measured = grid.height > 0 ? Math.max(MIN_HOUR_HEIGHT, grid.height / TOTAL_HOURS) : 0;
+  const hourHeight = fixedHourHeight || measured;
+  const gutter = showGutter ? GUTTER : 0;
+  const layerWidth = Math.max(0, grid.width - gutter);
 
   // Demi-heures et blocs centrés : mise en page mobile. Sur PC, la grille
   // garde sa présentation d'origine.
@@ -65,7 +105,7 @@ export default function DayTimeline({ date, onSelectEvent, showLaneHeader = true
   return (
     <View style={styles.container}>
       {showLaneHeader && visibleIds.length > 1 && (
-        <View style={styles.laneHeader}>
+        <View style={[styles.laneHeader, { marginLeft: gutter }]}>
           {visibleIds.map((id) => {
             const person = people.find((p) => p.id === id);
             return (
@@ -95,10 +135,12 @@ export default function DayTimeline({ date, onSelectEvent, showLaneHeader = true
               if (isHalf && !showHalfHours) return null;
               return (
                 <View key={i} style={[styles.hourRow, { top: (i * hourHeight) / 2 }]}>
-                  <Text style={[styles.hourLabel, isHalf && styles.halfLabel]}>
-                    {String(START_HOUR + Math.floor(i / 2)).padStart(2, '0')}
-                    {isDesktop ? 'h' : isHalf ? 'h30' : 'h00'}
-                  </Text>
+                  {showGutter && (
+                    <Text style={[styles.hourLabel, isHalf && styles.halfLabel]}>
+                      {String(START_HOUR + Math.floor(i / 2)).padStart(2, '0')}
+                      {isDesktop ? 'h' : isHalf ? 'h30' : 'h00'}
+                    </Text>
+                  )}
                   <View
                     style={[styles.hourLine, isDesktop && styles.hourLineSolid, isHalf && styles.halfLine]}
                   />
@@ -107,12 +149,12 @@ export default function DayTimeline({ date, onSelectEvent, showLaneHeader = true
             })}
 
             {showNowLine && (
-              <View style={[styles.nowLine, { top: nowTop }]}>
+              <View style={[styles.nowLine, { top: nowTop, left: gutter }]}>
                 <View style={styles.nowDot} />
               </View>
             )}
 
-            <View style={styles.eventsLayer}>
+            <View style={[styles.eventsLayer, { left: gutter }]}>
               {timedEvents.map((evt) => {
                 const pos = getEventPosition(evt, hourHeight);
                 const unit = 100 / evt.laneCount;
@@ -148,7 +190,7 @@ export default function DayTimeline({ date, onSelectEvent, showLaneHeader = true
 const createStyles = (p) =>
   StyleSheet.create({
     container: { flex: 1 },
-    laneHeader: { flexDirection: 'row', marginLeft: GUTTER, marginBottom: 2, gap: 3 },
+    laneHeader: { flexDirection: 'row', marginBottom: 2, gap: 3 },
     laneHeaderCell: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 3 },
     laneDot: { width: 6, height: 6, borderRadius: RADIUS.full },
     laneName: { fontSize: 10, fontWeight: '800' },
@@ -159,11 +201,22 @@ const createStyles = (p) =>
     hourRow: { position: 'absolute', left: 0, right: 0, flexDirection: 'row', alignItems: 'flex-start' },
     hourLabel: { width: GUTTER - 6, fontSize: 10, color: p.textMuted, fontWeight: '700', marginTop: -5 },
     halfLabel: { fontSize: 9, opacity: 0.55, fontWeight: '600' },
+    // Colonne d'heures autonome (vue semaine mobile) : même marge basse que la
+    // grille, pour que les deux partagent exactement la même hauteur d'heure.
+    scale: { width: GUTTER, position: 'relative', marginBottom: 10 },
+    scaleLabel: {
+      position: 'absolute',
+      left: 0,
+      width: GUTTER - 6,
+      fontSize: 10,
+      color: p.textMuted,
+      fontWeight: '700',
+    },
     // Lignes d'heure en pointillé, comme sur la grille de référence.
     hourLine: { flex: 1, height: 0, borderTopWidth: 1, borderTopStyle: 'dashed', borderTopColor: p.hairline },
     halfLine: { opacity: 0.45 },
     hourLineSolid: { borderTopStyle: 'solid' },
-    nowLine: { position: 'absolute', left: GUTTER, right: 0, height: 2, backgroundColor: p.now, zIndex: 5 },
+    nowLine: { position: 'absolute', right: 0, height: 2, backgroundColor: p.now, zIndex: 5 },
     nowDot: {
       position: 'absolute',
       left: -4,
@@ -173,7 +226,7 @@ const createStyles = (p) =>
       borderRadius: RADIUS.full,
       backgroundColor: p.now,
     },
-    eventsLayer: { position: 'absolute', left: GUTTER, right: 0, top: 0, bottom: 0 },
+    eventsLayer: { position: 'absolute', right: 0, top: 0, bottom: 0 },
     emptyWrap: { position: 'absolute', top: '35%', left: 0, right: 0, alignItems: 'center' },
     emptyText: { marginTop: 4, fontSize: 12, color: p.textMuted, fontWeight: '600' },
   });

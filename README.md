@@ -32,7 +32,9 @@ en cinq colonnes de soixante pixels — chaque journée occupe la largeur de l'�
 l'on fait glisser d'un jour à l'autre. Le défilement est libre — il ne
 s'accroche pas à un jour, on peut donc s'arrêter à cheval sur deux journées
 pour comparer une fin d'après-midi et le matin suivant — et deux boutons ronds
-fixes amènent au jour précédent ou suivant.
+fixes amènent au jour précédent ou suivant. La colonne des heures, elle, reste
+fixée à gauche : seuls les traits et les journées défilent, la graduation n'est
+donc écrite qu'une fois.
 
 La présentation mobile suit celle de l'emploi du temps de référence
 (jbedt.omegagroup.fr) : titre du jour en gros au-dessus de la grille, graduation

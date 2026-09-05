@@ -5,11 +5,15 @@ import { useAppTheme } from '../ctx/AppContext';
 import { getDayMatches } from '../config/schedules';
 import { WEEKDAYS_FR } from '../config/constants';
 import GlassCard from '../components/GlassCard';
-import DayTimeline from '../components/DayTimeline';
+import DayTimeline, { HourScale } from '../components/DayTimeline';
 import { RADIUS } from '../theme';
-import { addDays, formatLocalDate, getMonday } from '../utils/planningTime';
+import { TOTAL_HOURS, addDays, formatLocalDate, getMonday } from '../utils/planningTime';
 
 const NAV_SIZE = 34;
+const GUTTER = 44;
+// Hauteur réservée au titre du jour ; la colonne d'heures se décale d'autant
+// pour rester alignée sur les grilles qui défilent à côté.
+const TITLE_HEIGHT = 42;
 
 /**
  * Vue semaine sur mobile : les cinq jours côte à côte, chacun sur la largeur
@@ -25,6 +29,7 @@ export default function WeekPager({ date, onSelectEvent }) {
   const styles = useMemo(() => createStyles(palette), [palette]);
   const scrollRef = useRef(null);
   const [page, setPage] = useState({ width: 0, height: 0 });
+  const [scaleHeight, setScaleHeight] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const weekStart = useMemo(() => getMonday(date), [date]);
@@ -54,9 +59,22 @@ export default function WeekPager({ date, onSelectEvent }) {
   };
 
   const todayStr = formatLocalDate(new Date());
+  // Hauteur d'une heure partagée par la colonne fixe et toutes les journées.
+  const hourHeight = scaleHeight > 0 ? scaleHeight / TOTAL_HOURS : 0;
 
   return (
     <GlassCard style={styles.card}>
+      {/* Colonne des heures, fixe : seuls les traits et les journées défilent. */}
+      <View style={styles.scaleColumn}>
+        <View style={{ height: TITLE_HEIGHT }} />
+        <View
+          style={styles.scaleBody}
+          onLayout={(e) => setScaleHeight(e.nativeEvent.layout.height)}
+        >
+          <HourScale hourHeight={hourHeight} />
+        </View>
+      </View>
+
       <View
         style={styles.pagerWrap}
         onLayout={(e) =>
@@ -84,7 +102,7 @@ export default function WeekPager({ date, onSelectEvent }) {
                 // carrousel horizontal, un enfant en flex:1 n'hériterait
                 // d'aucune hauteur.
                 <View key={dateStr} style={{ width: page.width, height: page.height }}>
-                  <View style={styles.dayTitleBlock}>
+                  <View style={[styles.dayTitleBlock, { height: TITLE_HEIGHT }]}>
                     <Text style={[styles.dayTitle, isToday && { color: theme.primary }]} numberOfLines={1}>
                       {WEEKDAYS_FR[day.getDay() - 1]} {String(day.getDate()).padStart(2, '0')}/
                       {String(day.getMonth() + 1).padStart(2, '0')}
@@ -104,7 +122,12 @@ export default function WeekPager({ date, onSelectEvent }) {
                   </View>
 
                   <View style={styles.timelineWrap}>
-                    <DayTimeline date={day} onSelectEvent={onSelectEvent} />
+                    <DayTimeline
+                      date={day}
+                      onSelectEvent={onSelectEvent}
+                      hourHeight={hourHeight}
+                      showGutter={false}
+                    />
                   </View>
                 </View>
               );
@@ -144,11 +167,14 @@ export default function WeekPager({ date, onSelectEvent }) {
 
 const createStyles = (p) =>
   StyleSheet.create({
-    card: { flex: 1, paddingHorizontal: 8, paddingTop: 6, paddingBottom: 6 },
+    // La carte tient la colonne fixe et le carrousel côte à côte.
+    card: { flex: 1, flexDirection: 'row', paddingHorizontal: 8, paddingTop: 6, paddingBottom: 6 },
+    scaleColumn: { width: GUTTER },
+    scaleBody: { flex: 1 },
     pagerWrap: { flex: 1, overflow: 'hidden', position: 'relative' },
 
     // Le titre laisse libres les deux extrémités, où se posent les boutons.
-    dayTitleBlock: { alignItems: 'center', paddingHorizontal: NAV_SIZE + 6, marginBottom: 2 },
+    dayTitleBlock: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: NAV_SIZE + 6 },
     dayTitle: { fontSize: 17, fontWeight: '800', color: p.text, userSelect: 'none' },
     dayMarks: { flexDirection: 'row', alignItems: 'center', gap: 5, height: 12 },
     todayMark: { fontSize: 9, fontWeight: '800' },
