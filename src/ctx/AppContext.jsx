@@ -8,6 +8,7 @@ const VISIBLE_KEY = '@edt_visible_people_v1';
 const THEME_KEY = '@edt_theme_v1';
 const MODE_KEY = '@edt_mode_v1';
 const PROFILE_KEY = '@edt_profile_v1';
+const VIEW_KEY = '@edt_view_v1';
 
 const ALL_VISIBLE = PEOPLE.reduce((acc, p) => ({ ...acc, [p.id]: true }), {});
 
@@ -26,6 +27,9 @@ export function AppContextProvider({ children }) {
   const [themeKey, setThemeKey] = useState('rose');
   const [mode, setMode] = useState(DEFAULT_MODE);
   const [profileId, setProfileId] = useState(null); // "qui consulte" — purement indicatif
+  // 'day' | 'week' | null : tant que rien n'a été choisi, la vue par défaut
+  // découle de la largeur de l'écran (semaine sur PC, jour sur mobile).
+  const [viewMode, setViewMode] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const systemScheme = useColorScheme();
@@ -34,16 +38,18 @@ export function AppContextProvider({ children }) {
   useEffect(() => {
     (async () => {
       try {
-        const [savedVisible, savedTheme, savedMode, savedProfile] = await Promise.all([
+        const [savedVisible, savedTheme, savedMode, savedProfile, savedView] = await Promise.all([
           AsyncStorage.getItem(VISIBLE_KEY),
           AsyncStorage.getItem(THEME_KEY),
           AsyncStorage.getItem(MODE_KEY),
           AsyncStorage.getItem(PROFILE_KEY),
+          AsyncStorage.getItem(VIEW_KEY),
         ]);
         if (savedVisible) setVisiblePeople({ ...ALL_VISIBLE, ...JSON.parse(savedVisible) });
         if (savedTheme && THEMES[savedTheme]) setThemeKey(savedTheme);
         if (savedMode && MODES.includes(savedMode)) setMode(savedMode);
         if (savedProfile && getPerson(savedProfile)) setProfileId(savedProfile);
+        if (savedView === 'day' || savedView === 'week') setViewMode(savedView);
       } catch (e) {
         console.warn('Préférences illisibles, valeurs par défaut utilisées.', e);
       } finally {
@@ -86,6 +92,12 @@ export function AppContextProvider({ children }) {
     AsyncStorage.setItem(MODE_KEY, next).catch(() => {});
   };
 
+  const chooseView = (next) => {
+    if (next !== 'day' && next !== 'week') return;
+    setViewMode(next);
+    AsyncStorage.setItem(VIEW_KEY, next).catch(() => {});
+  };
+
   const chooseProfile = (personId) => {
     const next = profileId === personId ? null : personId;
     setProfileId(next);
@@ -111,9 +123,11 @@ export function AppContextProvider({ children }) {
       profileId,
       profile: getPerson(profileId),
       chooseProfile,
+      viewMode,
+      chooseView,
       isLoaded,
     }),
-    [visiblePeople, themeKey, mode, isDark, profileId, isLoaded]
+    [visiblePeople, themeKey, mode, isDark, profileId, viewMode, isLoaded]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

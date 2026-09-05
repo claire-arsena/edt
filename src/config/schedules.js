@@ -1,5 +1,6 @@
 import { PEOPLE, getPerson } from './people';
 import { formatLocalDate } from '../utils/planningTime';
+import { isExamEvent } from './exams';
 import claireSchedule from '../data/schedules/claire.json';
 import albanSchedule from '../data/schedules/alban.json';
 import claraSchedule from '../data/schedules/clara.json';
@@ -27,6 +28,23 @@ export function getMergedSchedule(visiblePeople) {
     });
   });
   return events;
+}
+
+// Pour le calendrier : quelles personnes ont cours chaque jour, et si la
+// journée comporte un examen. Une seule passe sur les flux chargés.
+export function getDayIndex(visiblePeople) {
+  const index = new Map();
+  PEOPLE.forEach(({ id, accent }) => {
+    if (visiblePeople && visiblePeople[id] === false) return;
+    (SCHEDULES_BY_PERSON[id] || []).forEach((evt) => {
+      const key = formatLocalDate(new Date(evt.start));
+      const entry = index.get(key) || { accents: [], exam: false };
+      if (!entry.accents.includes(accent)) entry.accents.push(accent);
+      if (isExamEvent(evt)) entry.exam = true;
+      index.set(key, entry);
+    });
+  });
+  return index;
 }
 
 // ── Compatibilité des journées ───────────────────────────────────────────────

@@ -15,11 +15,21 @@ donc rafraîchis à chaque déploiement.
 
 | Largeur d'écran | Vue |
 | --- | --- |
-| < 900 px (mobile) | Timeline jour par jour, 8h → 18h, tenant en entier dans l'écran sans défilement, navigation jour précédent / suivant, cadre centré type application |
-| ≥ 900 px (PC) | Semaine du lundi au vendredi en 5 colonnes, même plage horaire (8h → 18h), navigation semaine par semaine, plein écran |
+| < 900 px (mobile) | Vue **Jour** (une journée pleine largeur) ou vue **Semaine** (les cinq jours en carrousel horizontal, un jour par page à pleine largeur). 8h → 18h, tenant en entier dans l'écran sans défilement vertical |
+| ≥ 900 px (PC) | Vue **Semaine** en 5 colonnes lundi → vendredi, ou vue **Jour**. Même plage horaire, plein écran |
 
 La vue est choisie à partir de la largeur de la fenêtre : ouverte depuis un PC,
 l'app affiche directement la semaine, sans écran d'accueil intermédiaire.
+
+Le sélecteur Jour / Semaine de la barre de navigation est disponible sur les
+deux formats et le choix est mémorisé. Sur mobile, la semaine ne se découpe pas
+en cinq colonnes de soixante pixels — chaque journée occupe une page entière du
+carrousel, que l'on fait glisser ou que l'on choisit par ses onglets.
+
+Le bouton **Calendrier** ouvre le mois : on touche une date pour s'y rendre
+directement, sans avancer jour après jour. Chaque case porte les pastilles des
+personnes qui ont cours ce jour-là, et passe au rouge quand la journée comporte
+un examen.
 
 Sur mobile, la hauteur d'une heure n'est pas fixe : elle se déduit de la place
 réellement laissée par les cartes du haut, mesurée à l'affichage. La journée
@@ -46,6 +56,11 @@ défilement — vérifié sur 375×667, 390×750 et 412×800.
   l'intérieur d'une journée, même quand les autres n'ont pas cours — les blocs ne
   se déplacent pas d'un jour à l'autre. Si une personne a deux cours simultanés,
   seule sa propre colonne se subdivise.
+- **Examens en évidence** : un créneau dont l'intitulé ou la description
+  contient « examen », « test », « partiel », « contrôle », « évaluation »,
+  « rattrapage », « soutenance » ou « DS » est affiché en rouge, précédé d'un ⚠,
+  et scintille doucement — il ne prend donc pas la couleur de son UE. La
+  comparaison ignore accents et casse.
 - **Détail au clic** : un clic sur un créneau ouvre sa fiche — intitulé complet,
   date et horaire en toutes lettres, enseignants, salle, et le reste de la
   description du flux (groupe, promotion).
