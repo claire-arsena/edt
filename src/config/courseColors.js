@@ -171,6 +171,8 @@ export function getDisplayTitle(title) {
   if (!title) return '';
   const code = findCourseCode(title);
   if (!code) return title;
+  // Le titre commence au code d'UE : le préfixe de groupe qui le précède
+  // parfois n'apporte rien.
   const at = title.indexOf(code);
   return at > 0 ? title.slice(at) : title;
 }

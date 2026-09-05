@@ -91,7 +91,7 @@ export default function WeekView({ date, isDesktop, onSelectEvent }) {
             <View key={dateStr} style={styles.dayColumn}>
               <View style={[styles.dayHeader, isToday && { backgroundColor: theme.tint }]}>
                 <Text style={[styles.dayName, isToday && { color: theme.primary }]} numberOfLines={1}>
-                  {isDesktop ? WEEKDAYS_FR[day.getDay() - 1] : WEEKDAYS_FR[day.getDay() - 1].slice(0, 3)}
+                  {WEEKDAYS_FR[day.getDay() - 1]}
                 </Text>
                 <Text style={[styles.dayDate, isToday && { color: theme.primary, fontWeight: '800' }]}>
                   {String(day.getDate()).padStart(2, '0')}/{String(day.getMonth() + 1).padStart(2, '0')}

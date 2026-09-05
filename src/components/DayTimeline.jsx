@@ -20,7 +20,7 @@ const MIN_HOUR_HEIGHT = 22;
 // Quantité de texte qu'un bloc peut porter, selon sa largeur en pixels :
 // sous ~40 px, un mot se casserait lettre par lettre.
 export const densityForWidth = (w) =>
-  w < 40 ? 'bare' : w < 95 ? 'micro' : w < 140 ? 'compact' : 'full';
+  w < 38 ? 'bare' : w < 72 ? 'micro' : w < 115 ? 'compact' : 'full';
 
 /**
  * Timeline d'une journée : graduation horaire de 8h à 18h et créneaux
@@ -31,7 +31,7 @@ export const densityForWidth = (w) =>
  * Utilisée telle quelle par la vue jour, et par la vue semaine mobile qui en
  * empile une par jour dans un carrousel horizontal.
  */
-export default function DayTimeline({ date, onSelectEvent, showLaneHeader = true }) {
+export default function DayTimeline({ date, onSelectEvent, showLaneHeader = true, isDesktop = false }) {
   const { visiblePeople, palette, people } = useAppTheme();
   const [grid, setGrid] = useState({ height: 0, width: 0 });
   const styles = useMemo(() => createStyles(palette), [palette]);
@@ -53,6 +53,10 @@ export default function DayTimeline({ date, onSelectEvent, showLaneHeader = true
 
   const hourHeight = grid.height > 0 ? Math.max(MIN_HOUR_HEIGHT, grid.height / TOTAL_HOURS) : 0;
   const layerWidth = Math.max(0, grid.width - GUTTER);
+
+  // Demi-heures et blocs centrés : mise en page mobile. Sur PC, la grille
+  // garde sa présentation d'origine.
+  const showHalfHours = !isDesktop && hourHeight >= 34;
 
   const now = new Date();
   const showNowLine = isToday && now.getHours() >= START_HOUR && now.getHours() < END_HOUR;
@@ -84,12 +88,23 @@ export default function DayTimeline({ date, onSelectEvent, showLaneHeader = true
       >
         {hourHeight > 0 && (
           <>
-            {Array.from({ length: TOTAL_HOURS + 1 }, (_, i) => (
-              <View key={i} style={[styles.hourRow, { top: i * hourHeight }]}>
-                <Text style={styles.hourLabel}>{String(START_HOUR + i).padStart(2, '0')}h</Text>
-                <View style={styles.hourLine} />
-              </View>
-            ))}
+            {/* Graduation : les heures pleines, et les demi-heures dès que la
+                hauteur disponible les rend lisibles. */}
+            {Array.from({ length: TOTAL_HOURS * 2 + 1 }, (_, i) => {
+              const isHalf = i % 2 === 1;
+              if (isHalf && !showHalfHours) return null;
+              return (
+                <View key={i} style={[styles.hourRow, { top: (i * hourHeight) / 2 }]}>
+                  <Text style={[styles.hourLabel, isHalf && styles.halfLabel]}>
+                    {String(START_HOUR + Math.floor(i / 2)).padStart(2, '0')}
+                    {isDesktop ? 'h' : isHalf ? 'h30' : 'h00'}
+                  </Text>
+                  <View
+                    style={[styles.hourLine, isDesktop && styles.hourLineSolid, isHalf && styles.halfLine]}
+                  />
+                </View>
+              );
+            })}
 
             {showNowLine && (
               <View style={[styles.nowLine, { top: nowTop }]}>
@@ -110,6 +125,7 @@ export default function DayTimeline({ date, onSelectEvent, showLaneHeader = true
                     left={`${evt.lane * unit}%`}
                     width={`${unit * evt.laneSpan}%`}
                     density={densityForWidth(blockWidth)}
+                    centered={!isDesktop}
                     onPress={onSelectEvent}
                   />
                 );
@@ -141,8 +157,12 @@ const createStyles = (p) =>
     // déborde sous la dernière ligne de la grille.
     timeline: { flex: 1, position: 'relative', marginBottom: 10 },
     hourRow: { position: 'absolute', left: 0, right: 0, flexDirection: 'row', alignItems: 'flex-start' },
-    hourLabel: { width: GUTTER - 6, fontSize: 10, color: p.textMuted, fontWeight: '600', marginTop: -5 },
-    hourLine: { flex: 1, height: 1, backgroundColor: p.hairline },
+    hourLabel: { width: GUTTER - 6, fontSize: 10, color: p.textMuted, fontWeight: '700', marginTop: -5 },
+    halfLabel: { fontSize: 9, opacity: 0.55, fontWeight: '600' },
+    // Lignes d'heure en pointillé, comme sur la grille de référence.
+    hourLine: { flex: 1, height: 0, borderTopWidth: 1, borderTopStyle: 'dashed', borderTopColor: p.hairline },
+    halfLine: { opacity: 0.45 },
+    hourLineSolid: { borderTopStyle: 'solid' },
     nowLine: { position: 'absolute', left: GUTTER, right: 0, height: 2, backgroundColor: p.now, zIndex: 5 },
     nowDot: {
       position: 'absolute',

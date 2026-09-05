@@ -43,7 +43,7 @@ export default function DayView({ date, isDesktop, onSelectEvent }) {
       )}
 
       <GlassCard style={styles.timelineCard}>
-        <DayTimeline date={date} onSelectEvent={onSelectEvent} />
+        <DayTimeline date={date} onSelectEvent={onSelectEvent} isDesktop={isDesktop} />
       </GlassCard>
     </View>
   );

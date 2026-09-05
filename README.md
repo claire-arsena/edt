@@ -24,7 +24,14 @@ l'app affiche directement la semaine, sans écran d'accueil intermédiaire.
 Le sélecteur Jour / Semaine de la barre de navigation est disponible sur les
 deux formats et le choix est mémorisé. Sur mobile, la semaine ne se découpe pas
 en cinq colonnes de soixante pixels — chaque journée occupe une page entière du
-carrousel, que l'on fait glisser ou que l'on choisit par ses onglets.
+carrousel, que l'on fait glisser ou que l'on parcourt avec les deux boutons
+ronds encadrant la date.
+
+La présentation mobile suit celle de l'emploi du temps de référence
+(jbedt.omegagroup.fr) : titre du jour en gros au-dessus de la grille, graduation
+à la demi-heure, lignes d'heure en pointillé et blocs à texte centré (intitulé,
+salle, enseignant, horaire). La vue PC, elle, garde sa présentation propre :
+blocs alignés à gauche et graduation à l'heure.
 
 Le bouton **Calendrier** ouvre le mois : on touche une date pour s'y rendre
 directement, sans avancer jour après jour. Chaque case porte les pastilles des
