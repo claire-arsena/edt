@@ -6,10 +6,26 @@ Même pile technique que « Ma Liste », déploiement Render en site statique.
 
 ## Fonctionnement
 
-Un flux iCal (`.ics`) par personne est téléchargé **au moment du build**, converti
-en JSON et embarqué dans le bundle : à l'exécution, l'app ne fait aucun appel
-réseau, elle lit `src/data/schedules/<prénom>.json`. Les emplois du temps sont
-donc rafraîchis à chaque déploiement.
+Un flux iCal (`.ics`) par personne alimente l'app, lu par **le même parseur**
+(`src/utils/icsParser.js`) à deux moments :
+
+1. **au build**, par `scripts/fetch-schedules.js`, qui fige un instantané dans
+   `src/data/schedules/<prénom>.json` — c'est ce que voit un visiteur avant même
+   la première réponse réseau ;
+2. **à chaque lancement de l'app** (et à chaque retour au premier plan), par
+   `src/services/scheduleSync.js`, qui rappelle les flux pour repartir de
+   données fraîches sans attendre un déploiement.
+
+La dernière réponse réussie est gardée sur l'appareil. En cas de flux muet, les
+données affichées viennent donc, par ordre de préférence : du flux rappelé à
+l'instant, de cette copie locale, puis de l'instantané du build — un emploi du
+temps ne peut plus disparaître parce qu'un build s'est fait éconduire par le
+serveur de l'université.
+
+L'indicateur de la barre de navigation dit lequel des trois cas s'applique :
+heure verte de la dernière récupération réussie, « Sync… » pendant l'appel,
+« Réessayer » en rouge si un flux configuré n'a rien renvoyé. Il est cliquable
+pour forcer une actualisation.
 
 ## Vues
 

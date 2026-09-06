@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PEOPLE, getPerson } from '../config/people';
+import { loadCachedSchedules, refreshSchedules } from '../services/scheduleSync';
 import { THEMES, getPalette, getShadows, getTheme } from '../theme';
 
 const VISIBLE_KEY = '@edt_visible_people_v1';
@@ -31,6 +32,42 @@ export function AppContextProvider({ children }) {
   // découle de la largeur de l'écran (semaine sur PC, jour sur mobile).
   const [viewMode, setViewMode] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // Fraîcheur des emplois du temps. `dataVersion` change à chaque mise à jour
+  // et sert de clé de rendu : les vues recalculent alors leurs créneaux.
+  const [dataVersion, setDataVersion] = useState(0);
+  const [syncedAt, setSyncedAt] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncFailed, setSyncFailed] = useState(false);
+
+  // Rappel des flux : cache local d'abord (affichage immédiat), puis réseau.
+  const syncSchedules = useCallback(async () => {
+    setIsSyncing(true);
+    try {
+      const { syncedAt: freshAt, results } = await refreshSchedules();
+      if (freshAt) setSyncedAt(freshAt);
+      // Un flux configuré qui n'a rien renvoyé : l'indicateur le signale
+      // plutôt que de laisser croire à des données du jour.
+      setSyncFailed(results.length > 0 && results.some((r) => !r.ok));
+      setDataVersion((v) => v + 1);
+    } finally {
+      setIsSyncing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const cachedAt = await loadCachedSchedules();
+      if (cancelled) return;
+      if (cachedAt) setSyncedAt(cachedAt);
+      setDataVersion((v) => v + 1);
+      await syncSchedules();
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [syncSchedules]);
 
   const systemScheme = useColorScheme();
   const isDark = mode === 'auto' ? systemScheme === 'dark' : mode === 'dark';
@@ -125,9 +162,14 @@ export function AppContextProvider({ children }) {
       chooseProfile,
       viewMode,
       chooseView,
+      dataVersion,
+      syncedAt,
+      isSyncing,
+      syncFailed,
+      syncSchedules,
       isLoaded,
     }),
-    [visiblePeople, themeKey, mode, isDark, profileId, viewMode, isLoaded]
+    [visiblePeople, themeKey, mode, isDark, profileId, viewMode, dataVersion, syncedAt, isSyncing, syncFailed, syncSchedules, isLoaded]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

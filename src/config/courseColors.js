@@ -1,4 +1,4 @@
-import { SCHEDULES_BY_PERSON } from './schedules';
+import { SCHEDULES_BY_PERSON, onSchedulesChanged } from './schedules';
 
 // Une couleur distincte par UE, dans la gamme de tons de chaque personne.
 //
@@ -103,7 +103,7 @@ export function getCourseKey(title) {
   return code || title.replace(/^[^A-Za-z0-9]+/, '').trim();
 }
 
-const courseKeysCache = {};
+let courseKeysCache = {};
 
 function getCourseKeys(personId) {
   if (!courseKeysCache[personId]) {
@@ -121,7 +121,16 @@ function getCourseKeys(personId) {
   return courseKeysCache[personId];
 }
 
-const paletteCache = {};
+let paletteCache = {};
+
+// Quand un emploi du temps est actualisé, le nombre d'UE d'une personne peut
+// avoir changé — donc sa palette et le rang de chaque UE.
+export function resetCourseColorCache() {
+  courseKeysCache = {};
+  paletteCache = {};
+}
+
+onSchedulesChanged(resetCourseColorCache);
 
 function getPalette(personId, isDark) {
   const count = getCourseKeys(personId).length;

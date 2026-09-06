@@ -40,7 +40,7 @@ function openingDay(now = new Date()) {
 export default function ScheduleScreen() {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const { isLoaded, viewMode, chooseView } = useAppTheme();
+  const { isLoaded, viewMode, chooseView, dataVersion, syncSchedules } = useAppTheme();
   const isDesktop = width >= DESKTOP_BREAKPOINT;
 
   const [date, setDate] = useState(openingDay);
@@ -59,9 +59,11 @@ export default function ScheduleScreen() {
         setDate(openingDay(now));
       }
       lastActiveRef.current = now;
+      // Revenir à l'app vaut relancement : on rappelle les flux.
+      syncSchedules();
     });
     return () => subscription.remove();
-  }, []);
+  }, [syncSchedules]);
 
   const activeView = viewMode || (isDesktop ? 'week' : 'day');
   const isWeek = activeView === 'week';
@@ -111,16 +113,23 @@ export default function ScheduleScreen() {
           <PeopleFilter compact={!isDesktop} style={styles.filter} />
         </View>
 
+        {/* `key` : quand les flux sont actualisés, les vues se remontent pour
+            recalculer leurs créneaux à partir des nouvelles données. */}
         {isWeek ? (
           // Sur PC, la semaine tient en cinq colonnes ; sur mobile, elle se
           // parcourt jour par jour, chacun sur toute la largeur.
           isDesktop ? (
-            <WeekView date={date} isDesktop onSelectEvent={setSelectedEvent} />
+            <WeekView key={dataVersion} date={date} isDesktop onSelectEvent={setSelectedEvent} />
           ) : (
-            <WeekPager date={date} onSelectEvent={setSelectedEvent} />
+            <WeekPager key={dataVersion} date={date} onSelectEvent={setSelectedEvent} />
           )
         ) : (
-          <DayView date={date} isDesktop={isDesktop} onSelectEvent={setSelectedEvent} />
+          <DayView
+            key={dataVersion}
+            date={date}
+            isDesktop={isDesktop}
+            onSelectEvent={setSelectedEvent}
+          />
         )}
       </View>
 

@@ -22,7 +22,24 @@ export default function ScheduleToolbar({
   onOpenCalendar,
   compact = false,
 }) {
-  const { theme, palette } = useAppTheme();
+  const { theme, palette, syncedAt, isSyncing, syncFailed, syncSchedules } = useAppTheme();
+
+  // Fraîcheur des données : heure de la dernière récupération réussie, ou
+  // l'invitation à réessayer si aucune n'a abouti.
+  const syncLabel = isSyncing
+    ? 'Sync…'
+    : syncFailed
+      ? 'Réessayer'
+      : syncedAt
+        ? new Date(syncedAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+        : 'Actualiser';
+  const syncColor = isSyncing
+    ? palette.textMuted
+    : syncFailed
+      ? palette.now
+      : syncedAt
+        ? palette.match
+        : palette.textMuted;
   const styles = useMemo(() => createStyles(palette), [palette]);
 
   return (
@@ -54,14 +71,33 @@ export default function ScheduleToolbar({
       </View>
 
       <View style={styles.actionRow}>
-        <TouchableOpacity
-          onPress={onOpenCalendar}
-          style={styles.calendarBtn}
-          accessibilityLabel="Ouvrir le calendrier"
-        >
-          <Ionicons name="calendar-outline" size={15} color={palette.text} />
-          <Text style={styles.calendarText}>Calendrier</Text>
-        </TouchableOpacity>
+        <View style={styles.leftActions}>
+          <TouchableOpacity
+            onPress={onOpenCalendar}
+            style={styles.calendarBtn}
+            accessibilityLabel="Ouvrir le calendrier"
+          >
+            <Ionicons name="calendar-outline" size={15} color={palette.text} />
+            <Text style={styles.calendarText}>Calendrier</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={syncSchedules}
+            disabled={isSyncing}
+            style={styles.syncBtn}
+            accessibilityLabel="Actualiser les emplois du temps"
+          >
+            <Ionicons
+              name={
+                isSyncing ? 'sync' : syncFailed ? 'alert-circle-outline'
+                  : syncedAt ? 'checkmark-circle-outline' : 'refresh-outline'
+              }
+              size={14}
+              color={syncColor}
+            />
+            <Text style={[styles.syncText, { color: syncColor }]}>{syncLabel}</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.segment}>
           {[
@@ -110,6 +146,9 @@ const createStyles = (p) =>
       borderColor: p.cardBorder,
     },
     calendarText: { fontSize: 11, fontWeight: '700', color: p.text },
+    leftActions: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+    syncBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4, paddingHorizontal: 4 },
+    syncText: { fontSize: 10, fontWeight: '700', color: p.textMuted },
 
     segment: {
       flexDirection: 'row',

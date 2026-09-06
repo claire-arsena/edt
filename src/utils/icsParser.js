@@ -1,0 +1,185 @@
+/**
+ * Parseur iCalendar (RFC 5545) minimal, partagé par le script de build et par
+ * l'app : un seul et même code lit les flux, qu'ils soient récupérés au moment
+ * du déploiement ou au lancement de l'application.
+ *
+ * Écrit en CommonJS pour être `require`-able par Node comme importable par
+ * Metro.
+ */
+
+// ── Parser iCalendar (RFC 5545) minimal ──────────────────────────────────────
+
+// Dépliage des lignes : une ligne repliée continue sur la suivante, préfixée
+// par une espace ou une tabulation (RFC 5545 §3.1).
+function unfoldLines(raw) {
+  const normalized = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const lines = [];
+  for (const line of normalized.split('\n')) {
+    if ((line.startsWith(' ') || line.startsWith('\t')) && lines.length > 0) {
+      lines[lines.length - 1] += line.slice(1);
+    } else {
+      lines.push(line);
+    }
+  }
+  return lines;
+}
+
+// Déséchappement des valeurs texte (RFC 5545 §3.3.11).
+function unescapeText(value) {
+  return (value || '')
+    .replace(/\\n/gi, '\n')
+    .replace(/\\,/g, ',')
+    .replace(/\\;/g, ';')
+    .replace(/\\\\/g, '\\');
+}
+
+// "DTSTART;TZID=Europe/Paris:20260901T080000" → nom, paramètres, valeur.
+function parseProperty(line) {
+  const colonIdx = line.indexOf(':');
+  if (colonIdx === -1) return null;
+  const rawKey = line.slice(0, colonIdx);
+  const value = line.slice(colonIdx + 1);
+  const [name, ...paramParts] = rawKey.split(';');
+  const params = {};
+  paramParts.forEach((p) => {
+    const eqIdx = p.indexOf('=');
+    if (eqIdx !== -1) params[p.slice(0, eqIdx).toUpperCase()] = p.slice(eqIdx + 1);
+  });
+  return { name: name.toUpperCase(), params, value };
+}
+
+function parseIcsDate(value, params) {
+  // Journée entière : "VALUE=DATE:20260901".
+  if (params.VALUE === 'DATE' || /^\d{8}$/.test(value)) {
+    return {
+      iso: `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}T00:00:00`,
+      allDay: true,
+    };
+  }
+  const match = value.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/);
+  if (!match) return { iso: null, allDay: false };
+  const [, y, mo, d, h, mi, s, z] = match;
+  if (z) {
+    // Horodatage UTC explicite : on garde le "Z", le navigateur affichera
+    // l'heure locale de Paris.
+    return { iso: `${y}-${mo}-${d}T${h}:${mi}:${s}Z`, allDay: false };
+  }
+  // Heure flottante ou TZID=Europe/Paris (cas courant d'un EDT français) :
+  // on la traite comme heure murale locale.
+  return { iso: `${y}-${mo}-${d}T${h}:${mi}:${s}`, allDay: false };
+}
+
+// ── Enseignants ──────────────────────────────────────────────────────────────
+
+// Le champ DESCRIPTION d'un flux ADE empile plusieurs informations, une par
+// ligne : intitulé du cours, groupe, enseignant(s), puis un pied de page
+// d'export. On retire ce qui est déjà affiché ailleurs (titre, salle) ou sans
+// intérêt, et on isole les lignes qui ressemblent à des noms d'enseignants.
+const EXPORT_LINE = /^\(?\s*export/i;
+const GROUP_LINE = /^(groupe|grp|gr\.|promo|semestre|s\d|cm\b|td\b|tp\b|ct\b)/i;
+
+function cleanDescriptionLines(description, { title, location }) {
+  return (description || '')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .filter((l) => !EXPORT_LINE.test(l))
+    .filter((l) => l !== title && l !== location);
+}
+
+// Marqueurs de groupe ADE isolés en tête de ligne ("A A RISCH Vincent",
+// "A SLEZAK Eileen") : une lettre seule ne porte pas d'information utile ici.
+function stripGroupMarkers(line) {
+  const tokens = line.split(/\s+/);
+  let i = 0;
+  while (i < tokens.length && /^[A-Z]$/.test(tokens[i])) i++;
+  return tokens.slice(i).join(' ');
+}
+
+// Un enseignant s'écrit "NOM Prénom" (le nom de famille en capitales) ou
+// "M. Dupont". Les lignes de groupe et de salle contiennent presque toujours
+// un chiffre ("A1-2", "3ème Année", "TP I-009", "GMP_205"), ce qui suffit à
+// les écarter.
+function looksLikeTeacher(line) {
+  if (!line || GROUP_LINE.test(line)) return false;
+  if (/\d/.test(line)) return false;
+  if (/^(M\.|Mme|Mlle|Mr)\s+\S/i.test(line)) return true;
+  return line.split(/\s+/).some((word) => word.length >= 2 && /^\p{Lu}+$/u.test(word));
+}
+
+function extractTeachers(lines) {
+  return lines.map(stripGroupMarkers).filter(looksLikeTeacher);
+}
+
+function parseIcs(raw) {
+  const lines = unfoldLines(raw);
+  const events = [];
+  let current = null;
+
+  for (const line of lines) {
+    if (line === 'BEGIN:VEVENT') {
+      current = {};
+      continue;
+    }
+    if (line === 'END:VEVENT') {
+      if (current && current.start) events.push(current);
+      current = null;
+      continue;
+    }
+    if (!current) continue;
+
+    const prop = parseProperty(line);
+    if (!prop) continue;
+
+    switch (prop.name) {
+      case 'UID':
+        current.uid = prop.value;
+        break;
+      case 'SUMMARY':
+        current.title = unescapeText(prop.value);
+        break;
+      case 'LOCATION':
+        current.location = unescapeText(prop.value);
+        break;
+      case 'DESCRIPTION':
+        current.description = unescapeText(prop.value);
+        break;
+      case 'DTSTART': {
+        const { iso, allDay } = parseIcsDate(prop.value, prop.params);
+        current.start = iso;
+        current.allDay = allDay;
+        break;
+      }
+      case 'DTEND': {
+        const { iso } = parseIcsDate(prop.value, prop.params);
+        current.end = iso;
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  events.sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : 0));
+  return events.map((e, i) => {
+    const title = e.title || 'Cours';
+    const location = e.location || '';
+    const details = cleanDescriptionLines(e.description, { title, location });
+    const teachers = extractTeachers(details);
+    return {
+      id: e.uid || `evt-${i}`,
+      title,
+      location,
+      // Enseignants isolés pour l'affichage ; `details` conserve le reste de
+      // la description (groupe, précisions) si aucun nom n'est reconnu.
+      teachers,
+      details,
+      description: e.description || '',
+      start: e.start,
+      end: e.end || e.start,
+      allDay: !!e.allDay,
+    };
+  });
+}
+
+module.exports = { parseIcs, unfoldLines, unescapeText, parseIcsDate, extractTeachers };

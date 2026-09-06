@@ -5,15 +5,32 @@ import claireSchedule from '../data/schedules/claire.json';
 import albanSchedule from '../data/schedules/alban.json';
 import claraSchedule from '../data/schedules/clara.json';
 
-// Emplois du temps générés au build par scripts/fetch-schedules.js. Une
-// personne dont le flux .ics n'est pas encore configuré a simplement un
-// tableau vide : son interrupteur reste sans effet jusqu'à ce que son lien
-// soit renseigné.
-export const SCHEDULES_BY_PERSON = {
+// Instantané figé au build par scripts/fetch-schedules.js. Il sert de point
+// de départ : au lancement, l'app rappelle les flux et remplace ces données
+// par des plus fraîches (src/services/scheduleSync.js). Le magasin est donc
+// modifiable, et les caches qui en dépendent sont vidés à chaque mise à jour.
+const store = {
   claire: claireSchedule,
   alban: albanSchedule,
   clara: claraSchedule,
 };
+
+export const SCHEDULES_BY_PERSON = store;
+
+// Ce qui dérive des emplois du temps (les couleurs, notamment, attribuées
+// d'après les UE réellement présentes) s'abonne ici pour se recalculer.
+const listeners = new Set();
+
+export function onSchedulesChanged(listener) {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
+export function setSchedule(personId, events) {
+  if (!Array.isArray(events)) return;
+  store[personId] = events;
+  listeners.forEach((listener) => listener());
+}
 
 export const hasSchedule = (personId) => (SCHEDULES_BY_PERSON[personId] || []).length > 0;
 
