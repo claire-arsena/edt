@@ -89,10 +89,17 @@ défilement — vérifié sur 375×667, 390×750 et 412×800.
   se déplacent pas d'un jour à l'autre. Si une personne a deux cours simultanés,
   seule sa propre colonne se subdivise.
 - **Examens en évidence** : un créneau dont l'intitulé ou la description
-  contient « examen », « test », « partiel », « contrôle », « évaluation »,
-  « rattrapage », « soutenance » ou « DS » est affiché en rouge, précédé d'un ⚠,
-  et scintille doucement — il ne prend donc pas la couleur de son UE. La
-  comparaison ignore accents et casse.
+  contient « examen », « test », « partiel », « évaluation », « rattrapage »,
+  « soutenance » ou « DS » est affiché en rouge, précédé d'un ⚠, et scintille
+  doucement — il ne prend donc pas la couleur de son UE. La comparaison ignore
+  accents et casse.
+
+  « Contrôle » est traité à part : c'est un mot d'épreuve, mais aussi un nom de
+  matière. Il ne déclenche le rouge que si l'intitulé ne porte pas de type de
+  séance (CM, TD, TP et variantes) et n'est pas de la forme « contrôle de … »
+  — « Contrôle de gestion TD » reste donc un cours ordinaire, tandis que
+  « contrôle continu », « contrôle terminal » et « contrôle de connaissances »
+  restent des épreuves.
 - **Détail au clic** : un clic sur un créneau ouvre sa fiche — intitulé complet,
   date et horaire en toutes lettres, enseignants, salle, et le reste de la
   description du flux (groupe, promotion).
