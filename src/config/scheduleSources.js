@@ -12,8 +12,8 @@ const SCHEDULE_SOURCES = {
     'https://agenda-web-consult.univ-amu.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?projectId=8&resources=42526&calType=ical&firstDate=2026-08-17&lastDate=2027-08-15',
   alban:
     'https://agenda-web-consult.univ-amu.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?projectId=8&resources=16173&calType=ical&firstDate=2026-08-17&lastDate=2027-08-15',
-  // Flux de Clara à renseigner (ou variable EDT_CLARA_ICS côté Render).
-  clara: '',
+  clara:
+    'https://agenda-web-consult.univ-amu.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?projectId=8&resources=3005&calType=ical&firstDate=2026-08-17&lastDate=2027-08-15',
 };
 
 // Au build seulement : une variable d'environnement prend le pas sur l'adresse
