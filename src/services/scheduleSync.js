@@ -19,14 +19,39 @@ const CACHE_KEY = '@edt_schedules_cache_v1';
 
 // Réinjecte le cache local : l'app affiche des données avant même la réponse
 // du réseau. Renvoie la date de la dernière synchronisation réussie.
+//
+// Seules les personnes encore alimentées par un flux sont concernées. Pour
+// celles dont l'emploi du temps vient de fichiers versionnés, c'est le bundle
+// qui fait foi : sans cette réserve, une réponse mise en cache du temps où
+// elles avaient un flux continuerait de masquer leurs fichiers à chaque
+// lancement.
 export async function loadCachedSchedules() {
   try {
     const raw = await AsyncStorage.getItem(CACHE_KEY);
     if (!raw) return null;
     const cache = JSON.parse(raw);
+    let stale = false;
+
     Object.entries(cache.schedules || {}).forEach(([personId, events]) => {
+      if (!SCHEDULE_SOURCES[personId]) {
+        stale = true;
+        return;
+      }
       if (Array.isArray(events) && events.length > 0) setSchedule(personId, events);
     });
+
+    // Purge des personnes qui n'ont plus de flux, pour ne pas traîner
+    // indéfiniment des données devenues sans objet.
+    if (stale) {
+      const kept = Object.fromEntries(
+        Object.entries(cache.schedules || {}).filter(([personId]) => !!SCHEDULE_SOURCES[personId])
+      );
+      await AsyncStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({ syncedAt: cache.syncedAt || null, schedules: kept })
+      ).catch(() => {});
+    }
+
     return cache.syncedAt || null;
   } catch (e) {
     console.warn('Cache des emplois du temps illisible.', e);
