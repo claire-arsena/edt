@@ -1,1 +1,1184 @@
-[]
+[
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32333436392d302d30",
+    "title": "Conseil et démarches d'intervention CM",
+    "location": "",
+    "teachers": [
+      "CORON Marguerite"
+    ],
+    "details": [
+      "Option Conseil",
+      "CORON Marguerite",
+      "(Modifié le:14/09/2026 13:35)"
+    ],
+    "description": "\n\nOption Conseil\nCORON Marguerite\n\n(Modifié le:14/09/2026 13:35)",
+    "start": "2026-09-14T07:00:00Z",
+    "end": "2026-09-14T10:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363033322d302d30",
+    "title": "Pilotage RH et contrôle de gestion sociale CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "MONIN Charline"
+    ],
+    "details": [
+      "Groupes TD",
+      "MONIN Charline",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nMONIN Charline\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-14T11:30:00Z",
+    "end": "2026-09-14T15:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383732382d302d30",
+    "title": "GRH 1 : Fonction RH, stratégie RH et GPEC - CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "Groupes TD",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-15T07:00:00Z",
+    "end": "2026-09-15T10:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d3132322d302d30",
+    "title": "Connaître le droit du travail CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "CHOPIN Frederique"
+    ],
+    "details": [
+      "Groupes TD",
+      "CHOPIN Frederique",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nCHOPIN Frederique\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-15T11:30:00Z",
+    "end": "2026-09-15T14:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d3238392d302d31",
+    "title": "Techniques d'enquêtes quantitatives pour les RH et la recherche CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "DI PAOLA Vanessa"
+    ],
+    "details": [
+      "Groupes TD",
+      "DI PAOLA Vanessa",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nDI PAOLA Vanessa\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-16T07:00:00Z",
+    "end": "2026-09-16T11:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d3132393630322d302d31",
+    "title": "Management et comportement organisationnel CM- KREIFER Farouk",
+    "location": "IBD S 03",
+    "teachers": [
+      "KREIFEUR Farouk"
+    ],
+    "details": [
+      "Groupes TD",
+      "KREIFEUR Farouk",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nKREIFEUR Farouk\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-17T12:00:00Z",
+    "end": "2026-09-17T15:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383732362d302d33",
+    "title": "Théories des organisations CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "PETRELLA Francesca"
+    ],
+    "details": [
+      "Groupes TD",
+      "PETRELLA Francesca",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nPETRELLA Francesca\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-18T07:00:00Z",
+    "end": "2026-09-18T10:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32333532302d302d30",
+    "title": "Conseil et démarches d'intervention CM",
+    "location": "IBD S 01",
+    "teachers": [
+      "KROHMER Cathy"
+    ],
+    "details": [
+      "Option Conseil",
+      "KROHMER Cathy",
+      "(Modifié le:14/09/2026 13:35)"
+    ],
+    "description": "\n\nOption Conseil\nKROHMER Cathy\n\n(Modifié le:14/09/2026 13:35)",
+    "start": "2026-09-18T11:30:00Z",
+    "end": "2026-09-18T14:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31343638352d302d30",
+    "title": "TD Anglais 1- GR1",
+    "location": "IBD S 03",
+    "teachers": [
+      "TROIAN Gollar"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "TROIAN Gollar",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nTROIAN Gollar\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-09-21T06:00:00Z",
+    "end": "2026-09-21T08:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32363239312d302d30",
+    "title": "TD - groupe 1 - Mettre en pratique le droit du travail-",
+    "location": "IBD I 02",
+    "teachers": [
+      "RAMBIER Léanna"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "RAMBIER Léanna",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nRAMBIER Léanna\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-09-21T08:15:00Z",
+    "end": "2026-09-21T10:15:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d3933352d302d30",
+    "title": "TD Anglais 1 - GR1",
+    "location": "IBD S 03",
+    "teachers": [
+      "TROIAN Gollar"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "TROIAN Gollar",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nTROIAN Gollar\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-09-21T13:30:00Z",
+    "end": "2026-09-21T16:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383732392d302d30",
+    "title": "GRH 1 : Fonction RH, stratégie RH et GPEC - CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "Groupes TD",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-22T07:00:00Z",
+    "end": "2026-09-22T10:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383436382d302d30",
+    "title": "Connaître le droit du travail CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "CHOPIN Frederique"
+    ],
+    "details": [
+      "Groupes TD",
+      "CHOPIN Frederique",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nCHOPIN Frederique\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-22T11:00:00Z",
+    "end": "2026-09-22T14:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31343638362d322d30",
+    "title": "TD Anglais  1- GR1",
+    "location": "IBD S 03",
+    "teachers": [
+      "TROIAN Gollar"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "TROIAN Gollar",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nTROIAN Gollar\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-09-23T06:00:00Z",
+    "end": "2026-09-23T08:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d3238392d302d30",
+    "title": "Techniques d'enquêtes quantitatives pour les RH et la recherche CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "DI PAOLA Vanessa"
+    ],
+    "details": [
+      "Groupes TD",
+      "DI PAOLA Vanessa",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nDI PAOLA Vanessa\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-23T11:00:00Z",
+    "end": "2026-09-23T15:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d3933352d312d30",
+    "title": "TD Anglais 1 - GR1",
+    "location": "IBD S 03",
+    "teachers": [
+      "TROIAN Gollar"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "TROIAN Gollar",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nTROIAN Gollar\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-09-24T06:00:00Z",
+    "end": "2026-09-24T08:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d35343430302d302d30",
+    "title": "TD de  GRH 1 groupe 1 - : Fonction RH, stratégie RH et GPEC",
+    "location": "IBD S 12",
+    "teachers": [
+      "MONIN Charline"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "MONIN Charline",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nMONIN Charline\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-09-24T08:15:00Z",
+    "end": "2026-09-24T10:15:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383733312d302d30",
+    "title": "GRH 2 : GRH et acquisition des compétences - CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "Groupes TD",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-24T11:30:00Z",
+    "end": "2026-09-24T14:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383732362d302d32",
+    "title": "Théories des organisations CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "PETRELLA Francesca"
+    ],
+    "details": [
+      "Groupes TD",
+      "PETRELLA Francesca",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nPETRELLA Francesca\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-25T07:00:00Z",
+    "end": "2026-09-25T10:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32333633302d302d30",
+    "title": "Conseil et démarches d'intervention CM",
+    "location": "IBD S 11",
+    "teachers": [
+      "KROHMER Cathy"
+    ],
+    "details": [
+      "Option Conseil",
+      "KROHMER Cathy",
+      "(Modifié le:14/09/2026 13:35)"
+    ],
+    "description": "\n\nOption Conseil\nKROHMER Cathy\n\n(Modifié le:14/09/2026 13:35)",
+    "start": "2026-09-25T11:30:00Z",
+    "end": "2026-09-25T14:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31343638362d312d30",
+    "title": "TD Anglais  1- GR1",
+    "location": "IBD S 03",
+    "teachers": [
+      "TROIAN Gollar"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "TROIAN Gollar",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nTROIAN Gollar\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-09-30T06:00:00Z",
+    "end": "2026-09-30T08:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363132352d302d33",
+    "title": "TD - groupe 1 - Mettre en pratique le droit du travail",
+    "location": "IBD S 12",
+    "teachers": [
+      "RAMBIER Léanna"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "RAMBIER Léanna",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nRAMBIER Léanna\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-09-30T08:15:00Z",
+    "end": "2026-09-30T10:15:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383234322d302d30",
+    "title": "Training Days   BU - Formation  initiale",
+    "location": "",
+    "teachers": [],
+    "details": [
+      "Master 2 GRH RSE",
+      "Groupes TD",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nMaster 2 GRH RSE\nGroupes TD\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-09-30T12:30:00Z",
+    "end": "2026-09-30T16:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31353936362d302d30",
+    "title": "TD- groupe 1 - Techniques d'enquêtes quantitatives",
+    "location": "IBD I 14",
+    "teachers": [
+      "DI PAOLA Vanessa"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "DI PAOLA Vanessa",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nDI PAOLA Vanessa\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-10-01T06:30:00Z",
+    "end": "2026-10-01T08:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32393036322d302d30",
+    "title": "Conduire un projet de recherche et d'accompagnement des changements organisationnels 1 CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "Groupes TD",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-10-01T11:30:00Z",
+    "end": "2026-10-01T14:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363131372d302d32",
+    "title": "Connaître le droit du travail CM Mme Chopin",
+    "location": "IBD S 03",
+    "teachers": [
+      "CHOPIN Frederique"
+    ],
+    "details": [
+      "Groupes TD",
+      "CHOPIN Frederique",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nCHOPIN Frederique\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-10-02T06:45:00Z",
+    "end": "2026-10-02T09:45:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383733302d302d30",
+    "title": "GRH 1 : Fonction RH, stratégie RH et GPEC - CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "Groupes TD",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-10-02T11:00:00Z",
+    "end": "2026-10-02T14:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31343638362d302d30",
+    "title": "TD Anglais  1- GR1",
+    "location": "IBD S 03",
+    "teachers": [
+      "TROIAN Gollar"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "TROIAN Gollar",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nTROIAN Gollar\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-10-07T06:00:00Z",
+    "end": "2026-10-07T08:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363132352d302d32",
+    "title": "TD - groupe 1 - Mettre en pratique le droit du travail",
+    "location": "IBD S 12",
+    "teachers": [
+      "RAMBIER Léanna"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "RAMBIER Léanna",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nRAMBIER Léanna\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-10-07T08:15:00Z",
+    "end": "2026-10-07T10:15:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363333332d302d30",
+    "title": "TD- groupe 1 - Techniques d'enquêtes quantitatives",
+    "location": "IBD I 14",
+    "teachers": [
+      "DI PAOLA Vanessa"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "DI PAOLA Vanessa",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nDI PAOLA Vanessa\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-10-08T07:00:00Z",
+    "end": "2026-10-08T09:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d35343435342d302d30",
+    "title": "Management et comportement organisationnel CM-",
+    "location": "IBD S 03",
+    "teachers": [
+      "FRANGIE Georgio"
+    ],
+    "details": [
+      "Groupes TD",
+      "FRANGIE Georgio",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nFRANGIE Georgio\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-10-08T12:00:00Z",
+    "end": "2026-10-08T15:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363131372d302d31",
+    "title": "Connaître le droit du travail CM Mme Chopin",
+    "location": "IBD S 03",
+    "teachers": [
+      "CHOPIN Frederique"
+    ],
+    "details": [
+      "Groupes TD",
+      "CHOPIN Frederique",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nCHOPIN Frederique\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-10-09T07:00:00Z",
+    "end": "2026-10-09T10:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363033352d302d30",
+    "title": "GRH 2 : GRH et acquisition des compétences - CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "Groupes TD",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-10-09T11:30:00Z",
+    "end": "2026-10-09T14:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363031312d312d30",
+    "title": "TD Anglais  1- GR1",
+    "location": "IBD S 03",
+    "teachers": [
+      "TROIAN Gollar"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "TROIAN Gollar",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nTROIAN Gollar\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-10-14T06:00:00Z",
+    "end": "2026-10-14T08:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363132352d302d31",
+    "title": "TD - groupe 1 - Mettre en pratique le droit du travail",
+    "location": "IBD S 12",
+    "teachers": [
+      "RAMBIER Léanna"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "RAMBIER Léanna",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nRAMBIER Léanna\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-10-14T08:15:00Z",
+    "end": "2026-10-14T10:15:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d35333434302d302d30",
+    "title": "Management et comportement organisationnel CM-",
+    "location": "IBD S 03",
+    "teachers": [
+      "FRANGIE Georgio"
+    ],
+    "details": [
+      "Groupes TD",
+      "FRANGIE Georgio",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nFRANGIE Georgio\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-10-14T13:30:00Z",
+    "end": "2026-10-14T16:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363432322d302d30",
+    "title": "TD- groupe 1 - Techniques d'enquêtes quantitatives",
+    "location": "IBD I 14",
+    "teachers": [
+      "DI PAOLA Vanessa"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "DI PAOLA Vanessa",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nDI PAOLA Vanessa\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-10-15T06:30:00Z",
+    "end": "2026-10-15T08:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363039352d302d30",
+    "title": "TD de  GRH 1 groupe 1 - : Fonction RH, stratégie RH et GPEC",
+    "location": "IBD S 15",
+    "teachers": [
+      "MONIN Charline"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "MONIN Charline",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nMONIN Charline\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-10-15T08:45:00Z",
+    "end": "2026-10-15T10:45:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d3132393630322d302d30",
+    "title": "Management et comportement organisationnel CM- KREIFER Farouk",
+    "location": "IBD S 03",
+    "teachers": [
+      "KREIFEUR Farouk"
+    ],
+    "details": [
+      "Groupes TD",
+      "KREIFEUR Farouk",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nKREIFEUR Farouk\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-10-15T12:00:00Z",
+    "end": "2026-10-15T15:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383732362d302d34",
+    "title": "Théories des organisations CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "PETRELLA Francesca"
+    ],
+    "details": [
+      "Groupes TD",
+      "PETRELLA Francesca",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nPETRELLA Francesca\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-10-16T07:00:00Z",
+    "end": "2026-10-16T10:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32333633312d302d30",
+    "title": "Conseil et démarches d'intervention CM",
+    "location": "IBD S 01",
+    "teachers": [
+      "CORON Marguerite"
+    ],
+    "details": [
+      "Option Conseil",
+      "CORON Marguerite",
+      "(Modifié le:14/09/2026 13:35)"
+    ],
+    "description": "\n\nOption Conseil\nCORON Marguerite\n\n(Modifié le:14/09/2026 13:35)",
+    "start": "2026-10-16T11:30:00Z",
+    "end": "2026-10-16T14:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363037342d302d30",
+    "title": "TD de GRH 2 groupe 1 -  GRH et acquisition des compétences",
+    "location": "IBD S 15",
+    "teachers": [
+      "MONIN Charline"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "MONIN Charline",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nMONIN Charline\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-10-28T09:15:00Z",
+    "end": "2026-10-28T11:15:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d36343633322d302d30",
+    "title": "TD- groupe 1 - Techniques d'enquêtes quantitatives",
+    "location": "IBD I 14",
+    "teachers": [
+      "DI PAOLA Vanessa"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "DI PAOLA Vanessa",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nDI PAOLA Vanessa\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-10-29T08:00:00Z",
+    "end": "2026-10-29T10:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d35343435362d302d30",
+    "title": "Management et comportement organisationnel CM-",
+    "location": "IBD S 03",
+    "teachers": [
+      "FRANGIE Georgio"
+    ],
+    "details": [
+      "Groupes TD",
+      "FRANGIE Georgio",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nFRANGIE Georgio\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-10-29T13:00:00Z",
+    "end": "2026-10-29T16:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32363533372d302d30",
+    "title": "Pilotage RH et contrôle de gestion sociale CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "MONIN Charline"
+    ],
+    "details": [
+      "Groupes TD",
+      "MONIN Charline",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nMONIN Charline\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-10-30T08:00:00Z",
+    "end": "2026-10-30T10:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363033332d302d30",
+    "title": "TD - groupe 1- Conduire un projet de recherche et d'accompagnement des changements organisationnels 1 TD",
+    "location": "IBD S 03",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-10-30T12:30:00Z",
+    "end": "2026-10-30T15:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32363239312d302d31",
+    "title": "TD - groupe 1 - Mettre en pratique le droit du travail-",
+    "location": "IBD I 02",
+    "teachers": [
+      "RAMBIER Léanna"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "RAMBIER Léanna",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nRAMBIER Léanna\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-11-04T09:15:00Z",
+    "end": "2026-11-04T11:15:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32383330382d302d30",
+    "title": "Conseil et démarches d'intervention CM",
+    "location": "IBD S 13",
+    "teachers": [
+      "CORON Marguerite"
+    ],
+    "details": [
+      "Option Conseil",
+      "CORON Marguerite",
+      "(Modifié le:14/09/2026 13:35)"
+    ],
+    "description": "\n\nOption Conseil\nCORON Marguerite\n\n(Modifié le:14/09/2026 13:35)",
+    "start": "2026-11-04T12:30:00Z",
+    "end": "2026-11-04T15:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d36353134332d302d30",
+    "title": "TD- groupe 1 - Techniques d'enquêtes quantitatives",
+    "location": "IBD I 14",
+    "teachers": [
+      "DI PAOLA Vanessa"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "DI PAOLA Vanessa",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nDI PAOLA Vanessa\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-11-05T07:30:00Z",
+    "end": "2026-11-05T09:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383734382d302d30",
+    "title": "GRH 2 : GRH et acquisition des compétences - CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "Groupes TD",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-11-05T12:30:00Z",
+    "end": "2026-11-05T15:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383732362d302d30",
+    "title": "Théories des organisations CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "PETRELLA Francesca"
+    ],
+    "details": [
+      "Groupes TD",
+      "PETRELLA Francesca",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nPETRELLA Francesca\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-11-06T08:00:00Z",
+    "end": "2026-11-06T11:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32333633322d302d30",
+    "title": "Conseil et démarches d'intervention CM",
+    "location": "IBD S 01",
+    "teachers": [
+      "CORON Marguerite"
+    ],
+    "details": [
+      "Option Conseil",
+      "CORON Marguerite",
+      "(Modifié le:14/09/2026 13:35)"
+    ],
+    "description": "\n\nOption Conseil\nCORON Marguerite\n\n(Modifié le:14/09/2026 13:35)",
+    "start": "2026-11-06T12:30:00Z",
+    "end": "2026-11-06T15:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363132352d302d30",
+    "title": "TD - groupe 1 - Mettre en pratique le droit du travail",
+    "location": "IBD S 12",
+    "teachers": [
+      "RAMBIER Léanna"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "RAMBIER Léanna",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nRAMBIER Léanna\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-11-12T09:45:00Z",
+    "end": "2026-11-12T11:45:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383734392d302d30",
+    "title": "GRH 2 : GRH et acquisition des compétences - CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "Groupes TD",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-11-12T12:30:00Z",
+    "end": "2026-11-12T15:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31353232372d302d30",
+    "title": "TD- groupe 1 - Techniques d'enquêtes quantitatives",
+    "location": "IBD S 03",
+    "teachers": [
+      "DI PAOLA Vanessa"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "DI PAOLA Vanessa",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nDI PAOLA Vanessa\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-11-13T08:00:00Z",
+    "end": "2026-11-13T10:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31393834312d302d30",
+    "title": "EXAMEN CC DROIT DU TRAVAIL",
+    "location": "IBD S 03",
+    "teachers": [
+      "CHOPIN Frederique"
+    ],
+    "details": [
+      "Groupes TD",
+      "CHOPIN Frederique",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nCHOPIN Frederique\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-11-13T12:00:00Z",
+    "end": "2026-11-13T15:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363031312d302d30",
+    "title": "TD Anglais  1- GR1",
+    "location": "IBD S 03",
+    "teachers": [
+      "TROIAN Gollar"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "TROIAN Gollar",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nTROIAN Gollar\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-11-18T07:00:00Z",
+    "end": "2026-11-18T09:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d35333433392d302d30",
+    "title": "Conférence Travail IRT",
+    "location": "",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "Groupes TD",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-11-18T16:00:00Z",
+    "end": "2026-11-18T17:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d34353136352d302d30",
+    "title": "TD de GRH 2 groupe 1 -  GRH et acquisition des compétences",
+    "location": "IBD S 15",
+    "teachers": [
+      "MONIN Charline"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "MONIN Charline",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nMONIN Charline\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-11-19T09:30:00Z",
+    "end": "2026-11-19T11:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383736332d302d30",
+    "title": "GRH 2 : GRH et acquisition des compétences - CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "Groupes TD",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-11-19T12:30:00Z",
+    "end": "2026-11-19T15:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31383732362d302d31",
+    "title": "Théories des organisations CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "PETRELLA Francesca"
+    ],
+    "details": [
+      "Groupes TD",
+      "PETRELLA Francesca",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\nPETRELLA Francesca\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-11-20T08:00:00Z",
+    "end": "2026-11-20T11:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32333634362d302d30",
+    "title": "Conseil et démarches d'intervention CM",
+    "location": "IBD S 01",
+    "teachers": [
+      "KROHMER Cathy"
+    ],
+    "details": [
+      "Option Conseil",
+      "KROHMER Cathy",
+      "(Modifié le:14/09/2026 13:35)"
+    ],
+    "description": "\n\nOption Conseil\nKROHMER Cathy\n\n(Modifié le:14/09/2026 13:35)",
+    "start": "2026-11-20T12:30:00Z",
+    "end": "2026-11-20T15:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31343638352d302d31",
+    "title": "TD Anglais 1- GR1",
+    "location": "IBD S 03",
+    "teachers": [
+      "TROIAN Gollar"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "TROIAN Gollar",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nTROIAN Gollar\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-11-25T07:00:00Z",
+    "end": "2026-11-25T09:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32373536372d302d30",
+    "title": "TD de  GRH 1 groupe 1 - : Fonction RH, stratégie RH et GPEC",
+    "location": "IBD S 03",
+    "teachers": [
+      "MONIN Charline"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "MONIN Charline",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nMONIN Charline\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-11-25T12:00:00Z",
+    "end": "2026-11-25T14:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363134322d302d30",
+    "title": "Management et comportement organisationnel CM-",
+    "location": "IBD S 03",
+    "teachers": [],
+    "details": [
+      "Groupes TD",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2026-11-26T12:30:00Z",
+    "end": "2026-11-26T15:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32393036312d302d30",
+    "title": "TD- groupe 1 - Conduire un projet de recherche et d'accompagnement des changements organisationnels 1 CM",
+    "location": "IBD S 03",
+    "teachers": [
+      "GASTALDI Lise"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "GASTALDI Lise",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nGASTALDI Lise\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-11-27T08:00:00Z",
+    "end": "2026-11-27T11:00:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d31363131352d302d30",
+    "title": "Conseil et démarches d'intervention CM- M1 GRH",
+    "location": "IBD S 01",
+    "teachers": [
+      "DEES Damien"
+    ],
+    "details": [
+      "Option Conseil",
+      "DEES Damien",
+      "(Modifié le:14/09/2026 13:35)"
+    ],
+    "description": "\n\nOption Conseil\nDEES Damien\n\n(Modifié le:14/09/2026 13:35)",
+    "start": "2026-11-27T12:30:00Z",
+    "end": "2026-11-27T15:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d37343139352d302d30",
+    "title": "TD de GRH 2 groupe 1 -  GRH et acquisition des compétences",
+    "location": "IBD S 15",
+    "teachers": [
+      "MONIN Charline"
+    ],
+    "details": [
+      "M1 GRH TD GR1",
+      "MONIN Charline",
+      "(Modifié le:14/09/2026 17:16)"
+    ],
+    "description": "\n\nM1 GRH TD GR1\nMONIN Charline\n\n(Modifié le:14/09/2026 17:16)",
+    "start": "2026-12-03T09:15:00Z",
+    "end": "2026-12-03T11:15:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d32333436302d302d30",
+    "title": "Conseil et démarches d'intervention CM",
+    "location": "IBD I 02",
+    "teachers": [
+      "CORON Marguerite"
+    ],
+    "details": [
+      "Option Conseil",
+      "CORON Marguerite",
+      "(Modifié le:14/09/2026 13:35)"
+    ],
+    "description": "\n\nOption Conseil\nCORON Marguerite\n\n(Modifié le:14/09/2026 13:35)",
+    "start": "2026-12-04T12:30:00Z",
+    "end": "2026-12-04T15:30:00Z",
+    "allDay": false
+  },
+  {
+    "id": "ADE60506c616e6e696e67556e69766572736974e9323032365f323032372d38363833322d302d30",
+    "title": "Professionnels in live RH BU IBD",
+    "location": "",
+    "teachers": [],
+    "details": [
+      "Groupes TD",
+      "(Modifié le:14/09/2026 17:22)"
+    ],
+    "description": "\n\nGroupes TD\n\n(Modifié le:14/09/2026 17:22)",
+    "start": "2027-01-14T16:30:00Z",
+    "end": "2027-01-14T18:00:00Z",
+    "allDay": false
+  }
+]

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { getCourseColor, getCourseKey, getDisplayTitle, getTextOnCourse } from '../config/courseColors';
+import { getCourseColor, getShortTitle, getDisplayTitle, getTextOnCourse } from '../config/courseColors';
 import { isExamEvent, isFreeStudyEvent, getExamColor } from '../config/exams';
 import { useAppTheme } from '../ctx/AppContext';
 import { formatHMFr } from '../utils/planningTime';
@@ -43,9 +43,9 @@ export default function CourseBlock({
                      : getTextOnCourse(color);
   // En colonne étroite, le code d'UE ("R1.05", "S5.A&B.01") tient là où le
   // libellé serait tronqué à une lettre — et il identifie le cours aussi bien.
-  // L'intitulé est affiché avec son code d'UE ; en colonne étroite, le code
-  // seul tient là où le libellé serait tronqué.
-  const title = micro ? getCourseKey(event.title) : getDisplayTitle(event.title);
+  // L'intitulé est affiché avec son code d'UE ; en colonne étroite, on se
+  // rabat sur un libellé court (le code, ou le début du titre).
+  const title = micro ? getShortTitle(event.title) : getDisplayTitle(event.title);
   const teachers = (event.teachers?.length ? event.teachers : event.details?.slice(0, 1) || []).join(', ');
 
   // Scintillement : un voile clair dont l'opacité fait des allers-retours.

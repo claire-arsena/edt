@@ -87,6 +87,14 @@ défilement — vérifié sur 375×667, 390×750 et 412×800.
   chromatique : deux UE différentes ne peuvent donc jamais recevoir la même
   couleur, quel que soit leur nombre. Toutes les séances d'une même UE (CM, TD,
   TP) gardent la même couleur, identique en vue jour et en vue semaine.
+  Quand un emploi du temps ne porte aucun code d'UE — c'est le cas de celui de
+  Clara —, les cours sont regroupés par leur intitulé ramené à son ossature
+  (sans type de séance, numéro de groupe, ponctuation ni accents), et un
+  libellé qui en prolonge un autre rejoint le plus court. « TD Anglais 1- GR1 »
+  et « TD Anglais 1 - GR1 » sont donc un seul cours, comme « Connaître le droit
+  du travail CM » et « … CM Mme Chopin », ou le CM et le TD d'une même matière.
+  Sur ses 26 intitulés distincts, 15 cours sont ainsi reconnus.
+
   Ce qui distingue les trois emplois du temps, c'est le **ton** : Claire en
   clair et doux (pastel), Alban en sombre et froid (hiver), Clara en vif et
   saturé (été). Écart perceptuel mesuré (ΔE CIE76) entre deux UE d'une même
@@ -156,6 +164,14 @@ change les dates ou l'identifiant de ressource :
 | Claire | `EDT_CLAIRE_ICS` |
 | Alban  | `EDT_ALBAN_ICS` |
 | Clara  | `EDT_CLARA_ICS` |
+
+**Clara n'est pas alimentée par un flux** mais par deux exports `.ics`
+versionnés dans `src/data/ics/clara/` (tronc commun M1 GRH et option Conseil).
+Le build les lit, les fusionne — les créneaux présents dans les deux fichiers
+n'étant comptés qu'une fois — et écrit `src/data/schedules/clara.json`. Pour
+mettre son emploi du temps à jour, il suffit de remplacer ces fichiers ;
+n'ayant pas d'adresse à interroger, son emploi du temps n'est pas rappelé au
+lancement de l'app.
 
 Le parser iCal est écrit à la main (RFC 5545 : dépliage des lignes, `VEVENT`,
 `DTSTART`/`DTEND` avec ou sans heure, déséchappement du texte) — aucune

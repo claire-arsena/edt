@@ -95,28 +95,66 @@ function findCourseCode(title) {
   return null;
 }
 
+// Certains emplois du temps ne portent aucun code d'UE : le même cours y
+// apparaît sous plusieurs libellés (« TD Anglais 1- GR1 », « TD Anglais 1 -
+// GR1 »), et son CM et son TD sous des formulations différentes. On ramène
+// alors le titre à son ossature — sans type de séance, sans numéro de groupe,
+// sans ponctuation ni accents — pour que ces variantes se rejoignent.
+function normalizeTitleKey(title) {
+  return title
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\b(cm|td|tp|tda|tdb|tpa|tpb)\b/g, ' ')
+    .replace(/\bgroupe\s*\d+\b|\bgr\s*\d+\b|\bg\d+\b/g, ' ')
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^(de|du|des|d|le|la|les|l)\s+/, '');
+}
+
 export function getCourseKey(title) {
   if (!title) return '';
   const code = findCourseCode(title);
-  // Sans code identifiable (réunions, suivis…), le titre lui-même fait office
-  // de clé : ces créneaux gardent chacun leur couleur.
-  return code || title.replace(/^[^A-Za-z0-9]+/, '').trim();
+  return code || normalizeTitleKey(title);
 }
+
+// Longueur minimale d'un préfixe pour absorber les libellés qui le prolongent
+// (« Connaître le droit du travail » et « … CM Mme Chopin »). En dessous, deux
+// matières sans rapport risqueraient de se retrouver confondues.
+const MIN_PREFIX_LENGTH = 8;
 
 let courseKeysCache = {};
 
 function getCourseKeys(personId) {
   if (!courseKeysCache[personId]) {
     const events = SCHEDULES_BY_PERSON[personId] || [];
-    const keys = [...new Set(events.map((e) => getCourseKey(e.title)).filter(Boolean))].sort();
+    const rawKeys = [...new Set(events.map((e) => getCourseKey(e.title)).filter(Boolean))];
     const titles = new Set(events.map((e) => e.title));
+
+    // Un libellé qui en prolonge un autre désigne le même cours : la forme la
+    // plus courte sert de clé commune.
+    const bases = [...rawKeys].sort((a, b) => a.length - b.length);
+    const groupOf = new Map(
+      rawKeys.map((key) => [
+        key,
+        bases.find((b) => b.length >= MIN_PREFIX_LENGTH && (key === b || key.startsWith(`${b} `))) || key,
+      ])
+    );
+
+    let keys = [...new Set(groupOf.values())].sort();
 
     // Garde-fou : si un format d'intitulé inattendu faisait retomber tout un
     // emploi du temps sur une ou deux clés, tous les cours prendraient la même
     // couleur. Dans ce cas on repasse à une couleur par intitulé — moins
     // regroupé, mais jamais monochrome.
-    courseKeysCache[personId] =
-      keys.length <= 2 && titles.size >= 8 ? [...titles].sort() : keys;
+    if (keys.length <= 2 && titles.size >= 8) {
+      keys = [...titles].sort();
+      courseKeysCache[personId] = { keys, resolve: (_, title) => title };
+    } else {
+      courseKeysCache[personId] = { keys, resolve: (key) => groupOf.get(key) || key };
+    }
   }
   return courseKeysCache[personId];
 }
@@ -133,7 +171,7 @@ export function resetCourseColorCache() {
 onSchedulesChanged(resetCourseColorCache);
 
 function getPalette(personId, isDark) {
-  const count = getCourseKeys(personId).length;
+  const count = getCourseKeys(personId).keys.length;
   const cacheKey = `${personId}|${isDark}|${count}`;
   if (!paletteCache[cacheKey]) paletteCache[cacheKey] = buildPalette(personId, count, isDark);
   return paletteCache[cacheKey];
@@ -152,9 +190,10 @@ export function getCourseColor(title, isDark = false, personId = null) {
   const palette = getPalette(personId, isDark);
   if (!key) return palette[0];
 
-  // Rang de l'UE dans l'emploi du temps de la personne ; à défaut (cours
-  // absent du flux chargé), on retombe sur un hash du code.
-  const index = getCourseKeys(personId).indexOf(key);
+  // Rang du cours dans l'emploi du temps de la personne ; à défaut (cours
+  // absent des données chargées), on retombe sur un hash de la clé.
+  const { keys, resolve } = getCourseKeys(personId);
+  const index = keys.indexOf(resolve(key, title));
   return palette[(index === -1 ? hashString(key) : index) % palette.length];
 }
 
@@ -171,6 +210,24 @@ export function getTextOnCourse(color) {
   return relativeLuminance(color) > 0.38
     ? { strong: '#1c1c1e', soft: 'rgba(0,0,0,0.62)', dot: 'rgba(0,0,0,0.35)' }
     : { strong: '#ffffff', soft: 'rgba(255,255,255,0.88)', dot: 'rgba(255,255,255,0.9)' };
+}
+
+/**
+ * Libellé court pour les blocs trop étroits : le code d'UE quand il y en a un,
+ * sinon le début du vrai titre. La clé de regroupement, elle, ne s'affiche
+ * jamais — c'est une forme normalisée, sans accents ni majuscules.
+ */
+export function getShortTitle(title, maxLength = 22) {
+  if (!title) return '';
+  const code = findCourseCode(title);
+  if (code) return code;
+
+  const clean = getDisplayTitle(title);
+  if (clean.length <= maxLength) return clean;
+  // Coupe au dernier mot entier qui tient.
+  const cut = clean.slice(0, maxLength);
+  const lastSpace = cut.lastIndexOf(' ');
+  return `${(lastSpace > maxLength / 2 ? cut.slice(0, lastSpace) : cut).trim()}…`;
 }
 
 // Le titre est affiché à partir du code d'UE : le préfixe de groupe qui le

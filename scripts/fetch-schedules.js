@@ -22,7 +22,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const { SCHEDULE_SOURCES, resolveSource } = require('../src/config/scheduleSources');
+const { SCHEDULE_SOURCES, LOCAL_SOURCES, resolveSource } = require('../src/config/scheduleSources');
 
 // Adresses effectives de ce build (variables d'environnement comprises).
 const BUILD_SOURCES = Object.fromEntries(
@@ -107,10 +107,62 @@ async function fetchSchedule(personId, url) {
   titles.slice(0, 5).forEach((t) => console.log(`      · ${t}`));
 }
 
+const ICS_DIR = path.join(__dirname, '..', 'src', 'data', 'ics');
+
+/**
+ * Fusionne les fichiers .ics d'une personne : les créneaux sont réunis, ceux
+ * partagés entre deux exports n'étant gardés qu'une fois (même identifiant),
+ * puis triés par date.
+ */
+function mergeLocalFiles(personId, files) {
+  const outPath = path.join(OUT_DIR, `${personId}.json`);
+  const byId = new Map();
+  const perFile = [];
+
+  for (const file of files) {
+    const filePath = path.join(ICS_DIR, file);
+    if (!fs.existsSync(filePath)) {
+      console.warn(`⚠️  Fichier absent : ${file}.`);
+      continue;
+    }
+    const events = parseIcs(fs.readFileSync(filePath, 'utf8'));
+    perFile.push(`${file} (${events.length})`);
+    events.forEach((evt) => byId.set(evt.id, evt));
+  }
+
+  if (byId.size === 0) {
+    keepExisting(personId, 'aucun créneau dans les fichiers fournis');
+    return;
+  }
+
+  const merged = [...byId.values()].sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : 0));
+  fs.writeFileSync(outPath, `${JSON.stringify(merged, null, 2)}\n`);
+
+  const duplicates = perFile.reduce((n, f) => n + Number(f.match(/\((\d+)\)/)[1]), 0) - merged.length;
+  console.log(
+    `✅  Emploi du temps de ${personId} fusionné depuis ${perFile.join(' + ')} → ${merged.length} créneaux` +
+      (duplicates > 0 ? ` (${duplicates} doublon(s) écarté(s)).` : '.')
+  );
+
+  const titles = [...new Set(merged.map((e) => e.title))];
+  console.log(`   ↳ ${titles.length} intitulés distincts, par exemple :`);
+  titles.slice(0, 5).forEach((t) => console.log(`      · ${t}`));
+}
+
 async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
   console.log('📅  Récupération des emplois du temps universitaires…\n');
+
+  for (const [personId, files] of Object.entries(LOCAL_SOURCES)) {
+    try {
+      mergeLocalFiles(personId, files);
+    } catch (e) {
+      keepExisting(personId, `fusion impossible : ${e.message}`);
+    }
+  }
+
   for (const [personId, url] of Object.entries(BUILD_SOURCES)) {
+    if (LOCAL_SOURCES[personId]) continue; // déjà fusionné depuis ses fichiers
     try {
       await fetchSchedule(personId, url);
     } catch (e) {
