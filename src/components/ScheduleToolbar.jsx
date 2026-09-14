@@ -101,18 +101,35 @@ export default function ScheduleToolbar({
 
         <View style={styles.segment}>
           {[
-            { key: 'day', label: 'Jour' },
-            { key: 'week', label: 'Semaine' },
+            { key: 'day', label: 'Jour', icon: 'today-outline' },
+            { key: 'week', label: 'Semaine', icon: 'calendar-outline' },
+            { key: 'compact', label: 'Condensé', icon: 'grid-outline' },
           ].map((option) => {
             const active = viewMode === option.key;
             return (
               <TouchableOpacity
                 key={option.key}
                 onPress={() => onChangeView(option.key)}
-                style={[styles.segmentBtn, active && { backgroundColor: theme.primary }]}
+                style={[
+                  styles.segmentBtn,
+                  compact && styles.segmentBtnCompact,
+                  active && { backgroundColor: theme.primary },
+                ]}
                 accessibilityLabel={`Vue ${option.label}`}
               >
-                <Text style={[styles.segmentText, active && styles.segmentTextActive]}>{option.label}</Text>
+                {/* Trois libellés ne tiennent pas sur un écran de téléphone :
+                    on s'y limite aux icônes. */}
+                {compact ? (
+                  <Ionicons
+                    name={option.icon}
+                    size={15}
+                    color={active ? '#fff' : palette.textMuted}
+                  />
+                ) : (
+                  <Text style={[styles.segmentText, active && styles.segmentTextActive]}>
+                    {option.label}
+                  </Text>
+                )}
               </TouchableOpacity>
             );
           })}
@@ -158,6 +175,7 @@ const createStyles = (p) =>
       overflow: 'hidden',
     },
     segmentBtn: { paddingHorizontal: 12, paddingVertical: 4 },
+    segmentBtnCompact: { paddingHorizontal: 10, paddingVertical: 3 },
     segmentText: { fontSize: 11, fontWeight: '700', color: p.textMuted },
     segmentTextActive: { color: '#fff' },
   });

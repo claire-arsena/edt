@@ -42,8 +42,17 @@ week-end, la semaine écoulée n'ayant plus d'intérêt. Laissée ouverte d'un j
 à l'autre, elle se replace sur la nouvelle date dès qu'elle revient au premier
 plan, plutôt que de rester sur celle de la veille.
 
-Le sélecteur Jour / Semaine de la barre de navigation est disponible sur les
-deux formats et le choix est mémorisé. Sur mobile, la semaine ne se découpe pas
+Le sélecteur de la barre de navigation propose trois vues, sur les deux formats,
+et le choix est mémorisé :
+
+- **Jour** — une journée sur toute la largeur ;
+- **Semaine** — les cinq jours, parcourus (carrousel sur mobile, cinq colonnes
+  sur PC) ;
+- **Condensé** — la semaine entière d'un seul coup d'œil, sans rien faire
+  glisser : les créneaux sont réduits à des aplats fins, et le détail complet
+  d'un cours s'obtient d'un clic.
+
+Sur mobile, les trois boutons sont réduits à leurs icônes, faute de place. Sur mobile, la semaine ne se découpe pas
 en cinq colonnes de soixante pixels — chaque journée occupe la largeur de l'écran et
 l'on fait glisser d'un jour à l'autre. Le défilement est libre — il ne
 s'accroche pas à un jour, on peut donc s'arrêter à cheval sur deux journées
@@ -100,6 +109,9 @@ défilement — vérifié sur 375×667, 390×750 et 412×800.
   — « Contrôle de gestion TD » reste donc un cours ordinaire, tandis que
   « contrôle continu », « contrôle terminal » et « contrôle de connaissances »
   restent des épreuves.
+- **Autonomie libre à demi effacée** : un créneau dont l'intitulé contient
+  « autonomie libre » est affiché à 50 % d'opacité — c'est du temps banalisé,
+  pas un cours, il ne doit pas peser autant que le reste.
 - **Détail au clic** : un clic sur un créneau ouvre sa fiche — intitulé complet,
   date et horaire en toutes lettres, enseignants, salle, et le reste de la
   description du flux (groupe, promotion).

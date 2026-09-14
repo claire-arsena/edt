@@ -66,7 +66,9 @@ export default function ScheduleScreen() {
   }, [syncSchedules]);
 
   const activeView = viewMode || (isDesktop ? 'week' : 'day');
-  const isWeek = activeView === 'week';
+  const isCompact = activeView === 'compact';
+  // Les deux vues hebdomadaires partagent la navigation par semaine.
+  const isWeek = activeView === 'week' || isCompact;
 
   const { label, hint } = useMemo(() => {
     if (isWeek) {
@@ -115,7 +117,16 @@ export default function ScheduleScreen() {
 
         {/* `key` : quand les flux sont actualisés, les vues se remontent pour
             recalculer leurs créneaux à partir des nouvelles données. */}
-        {isWeek ? (
+        {isCompact ? (
+          // Condensé : les cinq jours d'un coup, en blocs fins.
+          <WeekView
+            key={dataVersion}
+            date={date}
+            isDesktop={isDesktop}
+            dense
+            onSelectEvent={setSelectedEvent}
+          />
+        ) : isWeek ? (
           // Sur PC, la semaine tient en cinq colonnes ; sur mobile, elle se
           // parcourt jour par jour, chacun sur toute la largeur.
           isDesktop ? (

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getCourseColor, getCourseKey, getDisplayTitle, getTextOnCourse } from '../config/courseColors';
-import { isExamEvent, getExamColor } from '../config/exams';
+import { isExamEvent, isFreeStudyEvent, getExamColor } from '../config/exams';
 import { useAppTheme } from '../ctx/AppContext';
 import { formatHMFr } from '../utils/planningTime';
 import { RADIUS } from '../theme';
@@ -36,6 +36,7 @@ export default function CourseBlock({
   const { isDark } = useAppTheme();
   const styles = useMemo(() => createStyles(), []);
   const isExam = isExamEvent(event);
+  const isFreeStudy = isFreeStudyEvent(event);
   const micro = density === 'micro';
   const color = isExam ? getExamColor(isDark) : getCourseColor(event.title, isDark, event.personId);
   const ink = isExam ? { strong: '#ffffff', soft: 'rgba(255,255,255,0.9)', dot: 'rgba(255,255,255,0.9)' }
@@ -76,6 +77,8 @@ export default function CourseBlock({
       style={[
         styles.block,
         { top: event.top, height, backgroundColor: color },
+        // Autonomie libre : pas de cours, le bloc s'efface à demi.
+        isFreeStudy && styles.blockFreeStudy,
         centered && styles.blockCentered,
         compact && styles.blockCompact,
         (micro || bare) && styles.blockMicro,
@@ -195,6 +198,7 @@ const createStyles = () =>
       shadowRadius: 4,
       elevation: 2,
     },
+    blockFreeStudy: { opacity: 0.5 },
     blockCentered: { alignItems: 'center', paddingVertical: 6, borderRadius: RADIUS.md },
     blockCompact: { paddingHorizontal: 6, paddingVertical: 4 },
     blockMicro: { paddingHorizontal: 4, paddingVertical: 3, borderRadius: 7 },

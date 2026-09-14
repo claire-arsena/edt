@@ -1,6 +1,7 @@
-// Repérage des créneaux d'examen : ADE les annonce dans l'intitulé (parfois
-// dans la description) sans champ dédié. Ces créneaux sont affichés en rouge
-// et scintillent, pour qu'ils sautent aux yeux au milieu des cours ordinaires.
+// Repérage des créneaux particuliers : ADE ne les distingue par aucun champ
+// dédié, seulement par leur intitulé. Les examens s'affichent en rouge et
+// scintillent pour sauter aux yeux ; les plages d'autonomie libre, à l'inverse,
+// s'effacent à demi puisqu'il n'y a pas cours.
 
 // Comparaison sans accents ni casse : "Contrôle" et "controle" se valent.
 const normalize = (s) =>
@@ -46,6 +47,14 @@ export function isExamEvent(event) {
 }
 
 // Rouge d'alerte, décliné pour les deux thèmes.
+// Plage d'autonomie libre : du temps banalisé, pas un cours. Affichée à
+// moitié transparente pour se faire oublier au milieu des vrais créneaux.
+const FREE_STUDY = /\bautonomie\s+libre\b/;
+
+export function isFreeStudyEvent(event) {
+  return !!event && FREE_STUDY.test(normalize(event.title));
+}
+
 export const EXAM_COLOR = { light: '#e53935', dark: '#d32f2f' };
 
 export const getExamColor = (isDark) => (isDark ? EXAM_COLOR.dark : EXAM_COLOR.light);

@@ -15,6 +15,10 @@ const ALL_VISIBLE = PEOPLE.reduce((acc, p) => ({ ...acc, [p.id]: true }), {});
 
 // 'auto' suit le réglage clair/sombre du système ; 'light' et 'dark' le forcent.
 export const MODES = ['auto', 'light', 'dark'];
+
+// Jour : une journée pleine largeur. Semaine : les cinq jours, à parcourir.
+// Condensé : la semaine entière d'un seul coup d'œil, en blocs fins.
+export const VIEW_MODES = ['day', 'week', 'compact'];
 const DEFAULT_MODE = 'dark';
 
 export const AppContext = createContext(null);
@@ -28,8 +32,9 @@ export function AppContextProvider({ children }) {
   const [themeKey, setThemeKey] = useState('rose');
   const [mode, setMode] = useState(DEFAULT_MODE);
   const [profileId, setProfileId] = useState(null); // "qui consulte" — purement indicatif
-  // 'day' | 'week' | null : tant que rien n'a été choisi, la vue par défaut
-  // découle de la largeur de l'écran (semaine sur PC, jour sur mobile).
+  // 'day' | 'week' | 'compact' | null : tant que rien n'a été choisi, la vue
+  // par défaut découle de la largeur de l'écran (semaine sur PC, jour sur
+  // mobile).
   const [viewMode, setViewMode] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -86,7 +91,7 @@ export function AppContextProvider({ children }) {
         if (savedTheme && THEMES[savedTheme]) setThemeKey(savedTheme);
         if (savedMode && MODES.includes(savedMode)) setMode(savedMode);
         if (savedProfile && getPerson(savedProfile)) setProfileId(savedProfile);
-        if (savedView === 'day' || savedView === 'week') setViewMode(savedView);
+        if (VIEW_MODES.includes(savedView)) setViewMode(savedView);
       } catch (e) {
         console.warn('Préférences illisibles, valeurs par défaut utilisées.', e);
       } finally {
@@ -130,7 +135,7 @@ export function AppContextProvider({ children }) {
   };
 
   const chooseView = (next) => {
-    if (next !== 'day' && next !== 'week') return;
+    if (!VIEW_MODES.includes(next)) return;
     setViewMode(next);
     AsyncStorage.setItem(VIEW_KEY, next).catch(() => {});
   };

@@ -31,8 +31,12 @@ const MIN_HOUR_HEIGHT = 22;
  * rendrait illisible, les créneaux ne se partagent donc la largeur que
  * lorsqu'ils se chevauchent réellement — la pastille de couleur indique alors
  * à qui appartient le cours.
+ *
+ * En mode condensé (`dense`), les blocs sont réduits à des aplats : la semaine
+ * entière tient à l'écran sans rien faire glisser, et le détail d'un cours
+ * s'obtient d'un clic.
  */
-export default function WeekView({ date, isDesktop, onSelectEvent }) {
+export default function WeekView({ date, isDesktop, dense = false, onSelectEvent }) {
   const { visiblePeople, theme, palette, people } = useAppTheme();
   const [grid, setGrid] = useState({ height: 0, width: 0 });
   const styles = useMemo(() => createStyles(palette, isDesktop), [palette, isDesktop]);
@@ -138,6 +142,13 @@ export default function WeekView({ date, isDesktop, onSelectEvent }) {
                       const pos = getEventPosition(evt, hourHeight);
                       const unit = 100 / evt.laneCount;
                       const blockWidth = (grid.width * unit * (evt.laneSpan ?? 1)) / 100;
+                      // En condensé, un bloc ne porte au mieux que son code
+                      // d'UE : c'est le clic qui donne le détail.
+                      const density = dense
+                        ? blockWidth < 38
+                          ? 'bare'
+                          : 'micro'
+                        : densityForWidth(blockWidth);
                       return (
                         <CourseBlock
                           key={`${evt.personId}-${evt.id}`}
@@ -145,7 +156,7 @@ export default function WeekView({ date, isDesktop, onSelectEvent }) {
                           height={pos.height}
                           left={`${evt.lane * unit}%`}
                           width={`${unit * (evt.laneSpan ?? 1)}%`}
-                          density={densityForWidth(blockWidth)}
+                          density={density}
                           onPress={onSelectEvent}
                         />
                       );
