@@ -31,7 +31,7 @@ pour forcer une actualisation.
 
 | Largeur d'écran | Vue |
 | --- | --- |
-| < 900 px (mobile) | Vue **Jour** (une journée pleine largeur) ou vue **Semaine** (les cinq jours en carrousel horizontal, un jour par page à pleine largeur). 8h → 18h, tenant en entier dans l'écran sans défilement vertical |
+| < 900 px (mobile) | Vue **Jour** (une journée pleine largeur) ou vue **Semaine** (les cinq jours en carrousel horizontal, un jour par page à pleine largeur). 8h → 19h, tenant en entier dans l'écran sans défilement vertical |
 | ≥ 900 px (PC) | Vue **Semaine** en 5 colonnes lundi → vendredi, ou vue **Jour**. Même plage horaire, plein écran |
 
 La vue est choisie à partir de la largeur de la fenêtre : ouverte depuis un PC,

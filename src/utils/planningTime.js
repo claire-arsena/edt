@@ -6,7 +6,7 @@
 // journée entière tienne à l'écran sans défilement.
 export const HOUR_HEIGHT = 56;
 export const START_HOUR = 8;
-export const END_HOUR = 18;
+export const END_HOUR = 19;
 export const TOTAL_HOURS = END_HOUR - START_HOUR;
 export const GRID_HEIGHT = TOTAL_HOURS * HOUR_HEIGHT;
 
